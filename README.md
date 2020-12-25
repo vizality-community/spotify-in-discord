@@ -28,18 +28,18 @@ This plugin uses the Spotify Connect Web API to function. One of the great thing
 
 ![Spotify in Discord Commands](screenshots/commands.png)
 
-| Command               | Alias  | Usage                     | Description                                                                                               |
-| --------------------- | ------ | ------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **spotify→ previous** | `prev` | ---                       | Play the last played song.                                                                                |
-| **spotify→ history**  | ---    | ---                       | Show your song play history.                                                                              |
-| **spotify→ lyrics**   | ---    | ---                       | Show the lyrics for the currently playing song.                                                           |
-| **spotify→ resume**   | ---    | ---                       | Resume Spotify playback.                                                                                  |
-| **spotify→ volume**   | `vol`  | **volume <0 to 100>**     | Sets your Spotify volume.                                                                                 |
-| **spotify→ share**    | ---    | **share \[url | track\]** | Send the currently playing song to current channel, or search for a song to share to the current channel. |
-| **spotify→ pause**    | ---    | ---                       | Pause the currently playing song.                                                                         |
-| **spotify→ next**     | `skip` | ---                       | Skip the currently playing song.                                                                          |
-| **spotify→ play**     | ---    | **play \<url | track\>**    | Play a Spotify song URL, or search for a song to play.                                                    |
-| **spotify→ art**      | ---    | ---                       | Show the album art for the currently playing song.                                                        |
+| Command               | Alias  | Usage                    | Description                                                                                               |
+| --------------------- | ------ | ------------------------ | --------------------------------------------------------------------------------------------------------- |
+| **spotify→ previous** | `prev` | ---                      | Play the last played song.                                                                                |
+| **spotify→ history**  | ---    | ---                      | Show your song play history.                                                                              |
+| **spotify→ lyrics**   | ---    | ---                      | Show the lyrics for the currently playing song.                                                           |
+| **spotify→ resume**   | ---    | ---                      | Resume Spotify playback.                                                                                  |
+| **spotify→ volume**   | `vol`  | **volume <0 to 100>**    | Sets your Spotify volume.                                                                                 |
+| **spotify→ share**    | ---    | **share \[url \| track\]**        | Send the currently playing song to current channel, or search for a song to share to the current channel. |
+| **spotify→ pause**    | ---    | ---                      | Pause the currently playing song.                                                                         |
+| **spotify→ next**     | `skip` | ---                      | Skip the currently playing song.                                                                          |
+| **spotify→ play**     | ---    | **play \<url \| track\>** | Play a Spotify song URL, or search for a song to play.                                                    |
+| **spotify→ art**      | ---    | ---                      | Show the album art for the currently playing song.                                                        |
 
 ## More Previews
 
