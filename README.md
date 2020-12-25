@@ -26,8 +26,6 @@ This plugin uses the Spotify Connect Web API to function. One of the great thing
 
 ## Commands
 
-![Spotify in Discord Commands](screenshots/commands.png)
-
 | Command               | Alias  | Arguments                | Description                                                                                               |
 | --------------------- | ------ | ------------------------ | --------------------------------------------------------------------------------------------------------- |
 | **spotify→ previous** | `prev` | ---                      | Play the last played song.                                                                                |
@@ -46,6 +44,10 @@ This plugin uses the Spotify Connect Web API to function. One of the great thing
 ### Art Command
 
 ![Art Command](screenshots/art-command.png)
+
+### Commands Autocomplete
+
+![Spotify in Discord Commands](screenshots/commands.png)
 
 ### History Command
 
