@@ -13,7 +13,7 @@
 
 Control Spotify from within Discord, and includes some other features like getting the currently playing song's lyrics and ablum cover art.
 
-**Full functionality of this plugin is available to all users, not just Spotify Premium users!**
+> Full functionality of this plugin is available to all users, not just Spotify Premium users!
 
 This plugin uses the Spotify Connect Web API to function. One of the great things about the Spotify Connect Web API is that it works cross-platform. This is a fork of the original version created by the Powercord Team for Powercord that I've ported over for use on Vizality with some preferential changes and expansions.
 
@@ -28,17 +28,17 @@ This plugin uses the Spotify Connect Web API to function. One of the great thing
 
 ![Spotify in Discord Commands](screenshots/commands.png)
 
-| Command               | Alias  | Usage                    | Description                                                                                               |
+| Command               | Alias  | Arguments                | Description                                                                                               |
 | --------------------- | ------ | ------------------------ | --------------------------------------------------------------------------------------------------------- |
 | **spotify→ previous** | `prev` | ---                      | Play the last played song.                                                                                |
 | **spotify→ history**  | ---    | ---                      | Show your song play history.                                                                              |
 | **spotify→ lyrics**   | ---    | ---                      | Show the lyrics for the currently playing song.                                                           |
 | **spotify→ resume**   | ---    | ---                      | Resume Spotify playback.                                                                                  |
-| **spotify→ volume**   | `vol`  | **volume <0 to 100>**    | Sets your Spotify volume.                                                                                 |
-| **spotify→ share**    | ---    | **share \[url \| track\]**        | Send the currently playing song to current channel, or search for a song to share to the current channel. |
+| **spotify→ volume**   | `vol`  | <0 to 100>               | Sets your Spotify volume.                                                                                 |
+| **spotify→ share**    | ---    | \[url \| track\]         | Send the currently playing song to current channel, or search for a song to share to the current channel. |
 | **spotify→ pause**    | ---    | ---                      | Pause the currently playing song.                                                                         |
 | **spotify→ next**     | `skip` | ---                      | Skip the currently playing song.                                                                          |
-| **spotify→ play**     | ---    | **play \<url \| track\>** | Play a Spotify song URL, or search for a song to play.                                                    |
+| **spotify→ play**     | ---    | \<url \| track\>         | Play a Spotify song URL, or search for a song to play.                                                    |
 | **spotify→ art**      | ---    | ---                      | Show the album art for the currently playing song.                                                        |
 
 ## More Previews
