@@ -2,16 +2,18 @@ import React, { PureComponent } from 'react';
 
 import SpotifyAPI from '../SpotifyAPI';
 
-const formatTime = (time) => {
-  time = Math.round(time / 1000);
-  const hours = Math.floor(time / 3600) % 24;
-  const minutes = Math.floor(time / 60) % 60;
-  const seconds = time % 60;
-  return [ hours, minutes, seconds ]
-    .map(v => v < 10 ? `0${v}` : v)
-    .filter((v, i) => v !== '00' || i > 0)
-    .join(':');
-};
+/*
+ * const formatTime = (time) => {
+ *   time = Math.round(time / 1000);
+ *   const hours = Math.floor(time / 3600) % 24;
+ *   const minutes = Math.floor(time / 60) % 60;
+ *   const seconds = time % 60;
+ *   return [ hours, minutes, seconds ]
+ *     .map(v => v < 10 ? `0${v}` : v)
+ *     .filter((v, i) => v !== '00' || i > 0)
+ *     .join(':');
+ * };
+ */
 
 export default class SeekBar extends PureComponent {
   constructor (props) {
@@ -108,7 +110,7 @@ export default class SeekBar extends PureComponent {
 
     return (
       <div className='spotify-in-discord-player-seek'>
-        <div className='spotify-in-discord-player-seek-elements'>
+        {/* <div className='spotify-in-discord-player-seek-elements'>
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(progress)}
           </span>
@@ -116,8 +118,8 @@ export default class SeekBar extends PureComponent {
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(this.props.duration)}
           </span>
-        </div>
-        <div className='spotify-in-discord-player-seek-bar' onMouseDown={(e) => this.startSeek(e)}>
+        </div> */}
+        <div className='spotify-in-discord-player-seek-bar' onMouseDown={e => this.startSeek(e)}>
           <span className='spotify-in-discord-player-seek-bar-progress' style={{ width: `${current}%` }}/>
           <span className='spotify-in-discord-player-seek-bar-cursor' style={{ left: `${current}%` }}/>
         </div>
