@@ -1,0 +1,60 @@
+@use '@vizality' as *;
+
+.spotify-in-discord-embed {
+  &-song-history {
+    $base: &;
+    &-grid-wrapper {
+      display: grid;
+      margin-top: 10px;
+      width: 100%;
+    }
+    &-grid-header {
+      text-transform: uppercase;
+      font-weight: 600;
+      background: var(--background-secondary-alt) !important;
+      font-size: 10px !important;
+      margin-bottom: 5px;
+      border: none !important;
+      &:hover {
+        border-radius: 0 !important;
+      }
+    }
+    &-grid-row {
+      display: grid;
+      grid-template-columns: 220px repeat(auto-fill, 138px) 70px;
+      padding: 5px 10px;
+      width: auto !important;
+      align-items: center;
+      column-gap: 20px;
+      font-size: 14px;
+      border-bottom: 1px solid color('white', .03);
+      &:hover {
+        background: var(--background-modifier-accent);
+        border-color: transparent;
+        border-radius: 8px;
+      }
+    }
+    &-grid-row-title {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      + div {
+        max-width: 100%;
+        width: fit-content;
+      }
+    }
+    &-grid-title {
+      &-text {
+        @include ellipsis;
+        cursor: pointer;
+      }
+    }
+    &-grid-artist {
+      @include ellipsis;
+    }
+    &-album-art-image-wrapper {
+      margin-right: 10px;
+      flex: 0 0 auto;
+    }
+  }
+}

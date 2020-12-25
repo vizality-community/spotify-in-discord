@@ -1,0 +1,21 @@
+@use '@vizality' as *;
+
+.spotify-in-discord-embed {
+  &-large-album-art {
+    &-wrapper {
+      @include size(300px);
+    }
+    &-image {
+      &-backdrop {
+        opacity: .4;
+        max-width: 50%;
+        &-blur {
+          background-size: cover;
+        }
+      }
+    }
+    &-img {
+      @include size(100%);
+    }
+  }
+}

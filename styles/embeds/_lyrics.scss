@@ -1,0 +1,38 @@
+@use '@vizality' as *;
+
+.spotify-in-discord-embed {
+  &-show-more-button {
+    width: 100%;
+  }
+  &-lyrics {
+    font-size: 14px;
+    line-height: 1.4;
+    &-header {
+      justify-content: center;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      &-name {
+        @include ellipsis;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: var(--header-primary);
+      }
+      &-artist {
+        @include ellipsis;
+      }
+      &-wrapper {
+        display: flex;
+        margin-bottom: 10px;
+      }
+    }
+    &-album-art-image-wrapper {
+      margin-right: 10px;
+      flex: 1 0 auto;
+    }
+    &-wrapper {
+      flex: 1;
+    }
+  }
+}
