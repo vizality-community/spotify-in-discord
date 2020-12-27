@@ -120,6 +120,7 @@ export default class SpotifyInDiscord extends Plugin {
 
     // Handle track
     const currentTrack = playerStore.getCurrentTrack();
+
     if (!currentTrack || currentTrack.id !== state.item.id) {
       playerStoreActions.updateCurrentTrack({
         id: state.item.id,

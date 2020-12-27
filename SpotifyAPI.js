@@ -15,7 +15,8 @@ export default {
         res.body.find(connection =>
           connection.type === 'spotify'
         ).id
-      );
+      )
+      .catch(() => console.error(`It looks like you don't have a Spotify account connected with Discord!`));
 
     return spotify.getAccessToken(spotifyUserID)
       .then(r => r.body.access_token);

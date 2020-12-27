@@ -8,12 +8,12 @@ export const RepeatState = Object.freeze({
   REPEAT_CONTEXT: 'REPEAT_CONTEXT'
 });
 
-const songHistory = [];
+export const songHistory = [];
 
-let lastActiveDeviceId = null;
-let devices = [];
-let currentTrack = null;
-let playerState = {
+export let lastActiveDeviceId = null;
+export let devices = [];
+export let currentTrack = null;
+export let playerState = {
   repeat: RepeatState.NO_REPEAT,
   shuffle: false,
   canRepeat: true,
