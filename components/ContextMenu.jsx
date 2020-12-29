@@ -14,7 +14,7 @@ const { closeContextMenu } = contextMenu;
 const ContextMenu = memo(props => {
   const { playerState, currentTrack, devices } = props;
   const [ , setVol ] = useState({});
-  const ad = Boolean(playerState.currentlyPlayingType === 'ad');
+  const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
 
   const setVolume = volume => {
     SpotifyAPI.setVolume(Math.round(volume));
@@ -64,7 +64,7 @@ const ContextMenu = memo(props => {
 
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={ad || cannotAll}>
+        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={advertisement || cannotAll}>
           <Menu.MenuRadioItem
             id={`off${isOff ? '-active' : ''}`}
             group='repeat'
@@ -92,7 +92,7 @@ const ContextMenu = memo(props => {
           label='Shuffle'
           checked={playerState.shuffle}
           action={() => SpotifyAPI.setShuffleState(!playerState.shuffle)}
-          disabled={ad || !playerState.canShuffle}
+          disabled={advertisement || !playerState.canShuffle}
         />
       </Menu.MenuGroup>
     );
@@ -125,7 +125,7 @@ const ContextMenu = memo(props => {
         <Menu.MenuItem
           id='open-spotify'
           label='Open in Spotify'
-          disabled={ad}
+          disabled={advertisement}
           action={() => {
             const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
             shell.openExternal(protocol ? currentTrack.uri : currentTrack.urls.track);
@@ -133,7 +133,7 @@ const ContextMenu = memo(props => {
         />
         <Menu.MenuItem
           id='send-album'
-          disabled={ad || !currentTrack?.urls?.album}
+          disabled={advertisement || !currentTrack?.urls?.album}
           label='Send Album to Channel'
           action={() => messages.sendMessage(
             channels.getChannelId(),
@@ -143,7 +143,7 @@ const ContextMenu = memo(props => {
         <Menu.MenuItem
           id='send-song'
           label='Send Song to Channel'
-          disabled={ad}
+          disabled={advertisement}
           action={() => messages.sendMessage(
             channels.getChannelId(),
             { content: currentTrack?.urls?.track }
@@ -152,14 +152,14 @@ const ContextMenu = memo(props => {
         <Menu.MenuSeparator/>
         <Menu.MenuItem
           id='copy-album'
-          disabled={ad || !currentTrack?.urls?.album}
+          disabled={advertisement || !currentTrack?.urls?.album}
           label='Copy Album URL'
           action={() => clipboard.writeText(currentTrack.urls.album)}
         />
         <Menu.MenuItem
           id='copy-song'
           label='Copy Song URL'
-          disabled={ad}
+          disabled={advertisement}
           action={() => clipboard.writeText(currentTrack.urls.track)}
         />
       </Menu.MenuGroup>
