@@ -4,6 +4,7 @@ import { clipboard, shell } from 'electron';
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
 import { Menu } from '@vizality/components';
 import { Messages } from '@vizality/i18n';
+import api from '@vizality/api';
 
 import playerStore from '../stores/player/store';
 import SpotifyAPI from '../SpotifyAPI';
@@ -13,6 +14,7 @@ const { closeContextMenu } = contextMenu;
 const ContextMenu = memo(props => {
   const { playerState, currentTrack, devices } = props;
   const [ , setVol ] = useState({});
+  const ad = Boolean(playerState.currentlyPlayingType === 'ad');
 
   const setVolume = volume => {
     SpotifyAPI.setVolume(Math.round(volume));
@@ -62,7 +64,7 @@ const ContextMenu = memo(props => {
 
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={cannotAll}>
+        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={ad || cannotAll}>
           <Menu.MenuRadioItem
             id={`off${isOff ? '-active' : ''}`}
             group='repeat'
@@ -90,7 +92,7 @@ const ContextMenu = memo(props => {
           label='Shuffle'
           checked={playerState.shuffle}
           action={() => SpotifyAPI.setShuffleState(!playerState.shuffle)}
-          disabled={!playerState.canShuffle}
+          disabled={ad || !playerState.canShuffle}
         />
       </Menu.MenuGroup>
     );
@@ -123,6 +125,7 @@ const ContextMenu = memo(props => {
         <Menu.MenuItem
           id='open-spotify'
           label='Open in Spotify'
+          disabled={ad}
           action={() => {
             const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
             shell.openExternal(protocol ? currentTrack.uri : currentTrack.urls.track);
@@ -130,31 +133,33 @@ const ContextMenu = memo(props => {
         />
         <Menu.MenuItem
           id='send-album'
-          disabled={!currentTrack.urls.album}
+          disabled={ad || !currentTrack?.urls?.album}
           label='Send Album to Channel'
           action={() => messages.sendMessage(
             channels.getChannelId(),
-            { content: currentTrack.urls.album }
+            { content: currentTrack?.urls?.album }
           )}
         />
         <Menu.MenuItem
           id='send-song'
           label='Send Song to Channel'
+          disabled={ad}
           action={() => messages.sendMessage(
             channels.getChannelId(),
-            { content: currentTrack.urls.track }
+            { content: currentTrack?.urls?.track }
           )}
         />
         <Menu.MenuSeparator/>
         <Menu.MenuItem
           id='copy-album'
-          disabled={!currentTrack.urls.album}
+          disabled={ad || !currentTrack?.urls?.album}
           label='Copy Album URL'
           action={() => clipboard.writeText(currentTrack.urls.album)}
         />
         <Menu.MenuItem
           id='copy-song'
           label='Copy Song URL'
+          disabled={ad}
           action={() => clipboard.writeText(currentTrack.urls.track)}
         />
       </Menu.MenuGroup>
@@ -172,9 +177,9 @@ const ContextMenu = memo(props => {
 });
 
 export default Flux.connectStores(
-  [ playerStore, vizality.api.settings.store ],
+  [ playerStore, api.settings.store ],
   props => ({
     ...playerStore.getStore(),
-    ...vizality.api.settings._fluxProps(props.addonId)
+    ...api.settings._fluxProps(props.addonId)
   })
 )(ContextMenu);

@@ -123,8 +123,6 @@ export default {
 
     const albumDimensions = await getImageDimensions(currentTrack.cover);
 
-    console.log(currentTrack);
-
     const result = {
       type: 'rich',
       provider: {

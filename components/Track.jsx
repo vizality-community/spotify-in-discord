@@ -17,7 +17,6 @@ export default memo(props => {
   );
 
   const handleClick = async item => {
-    console.log(action);
     if (action === 'share') {
       await messages.sendMessage(channels.getChannelId(), { content: item.external_urls.spotify });
       closeModal();

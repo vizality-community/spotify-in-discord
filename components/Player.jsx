@@ -5,6 +5,7 @@ import { AsyncComponent, Icon, HoverRoll, Flex } from '@vizality/components';
 import { Flux, getModule, contextMenu } from '@vizality/webpack';
 import { joinClassNames } from '@vizality/util';
 import { Messages } from '@vizality/i18n';
+import api from '@vizality/api';
 
 import playerStoreActions from '../stores/player/actions';
 import { SPOTIFY_DEFAULT_IMAGE } from '../constants';
@@ -19,8 +20,14 @@ const Tooltip = AsyncComponent.fromDisplayName('Tooltip');
 const Player = memo(props => {
   const { devices, currentTrack, playerState, base } = props;
   const [ , setSeeking ] = useState(null);
+  const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
 
   const renderButton = (tooltipText, icon, size, onClick, disabled, active) => {
+    if (advertisement) {
+      disabled = true;
+      onClick = () => void 0;
+    }
+
     return {
       ...base.props.children[2].props.children[0],
       props: {
@@ -90,14 +97,16 @@ const Player = memo(props => {
     Object.assign(nameComponent.props, props);
     nameComponent.props.children[0].props.className = 'spotify-title';
     nameComponent.props.children[0].props.children.props.children = currentTrack.name;
-    nameComponent.props.children[1] = (
-      <PanelSubtext className='spotify-artist'>
-        {Messages.USER_ACTIVITY_LISTENING_ARTISTS.format({
-          artists: currentTrack.artists,
-          artistsHook: t => t
-        })}
-      </PanelSubtext>
-    );
+    nameComponent.props.children[1] =
+      advertisement
+        ? null
+        : <PanelSubtext className='spotify-artist'>
+          {Messages.USER_ACTIVITY_LISTENING_ARTISTS.format({
+            artists: currentTrack.artists,
+            artistsHook: t => t
+          })}
+        </PanelSubtext>;
+
     return nameComponent;
   };
 
@@ -133,21 +142,20 @@ const Player = memo(props => {
               <div
                 className={joinClassNames('spotify-in-discord-player-album-cover-wrapper', avatarWrapper)}
                 onClick={() => {
+                  if (advertisement) return void 0;
                   const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
                   shell.openExternal(protocol ? currentTrack.uri : currentTrack.urls.track);
                 }}
               >
-                <Tooltip text={currentTrack.album} shouldShow={currentTrack.album}>
+                <Tooltip text={advertisement ? 'Advertisement' : currentTrack.album}>
                   {props => (
+                    // Not using LazyImage here because it seems to break the tooltip
                     <img
                       {...props}
-                      alt='Spotify cover'
                       src={currentTrack.cover || SPOTIFY_DEFAULT_IMAGE}
                       className={joinClassNames('spotify-in-discord-player-album-cover', avatar)}
-                      style={{
-                        width: 32,
-                        height: 32
-                      }}
+                      width='32'
+                      height='32'
                     />
                   )}
                 </Tooltip>
@@ -172,6 +180,7 @@ const Player = memo(props => {
     <div className='spotify-in-discord-player'>
       {renderFromBase()}
       <SeekBar
+        disabled={playerState.currentlyPlayingType === 'ad'}
         isPlaying={playerState.playing}
         duration={currentTrack.duration}
         progress={playerState.spotifyRecordedProgress}
@@ -190,9 +199,9 @@ const Player = memo(props => {
 });
 
 export default Flux.connectStores(
-  [ playerStore, vizality.api.settings.store ],
+  [ playerStore, api.settings.store ],
   props => ({
     ...playerStore.getStore(),
-    ...vizality.api.settings._fluxProps(props.addonId)
+    ...api.settings._fluxProps(props.addonId)
   })
 )(Player);

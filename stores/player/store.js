@@ -22,6 +22,7 @@ export let playerState = {
   spotifyRecordedProgress: 0,
   spotifyRecordedProgressAt: Date.now(),
   playing: false,
+  currentlyPlayingType: null,
   volume: 100
 };
 

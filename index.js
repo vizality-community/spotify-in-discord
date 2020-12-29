@@ -4,8 +4,10 @@ import { waitForElement, setCssVariable } from '@vizality/util/dom';
 import { patch, unpatch } from '@vizality/patcher';
 import { Plugin } from '@vizality/entities';
 import { sleep } from '@vizality/util';
+import api from '@vizality/api';
 
 import playerStoreActions from './stores/player/actions';
+import { SPOTIFY_DEFAULT_IMAGE } from './constants';
 import playerStore from './stores/player/store';
 import Settings from './components/Settings';
 import Player from './components/Player';
@@ -31,10 +33,10 @@ export default class SpotifyInDiscord extends Plugin {
     vizality.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
     SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
 
-    vizality.api.i18n.injectAllStrings(i18n);
+    api.i18n.injectAllStrings(i18n);
     playerStoreActions.fetchDevices();
 
-    vizality.api.settings.registerAddonSettings({
+    api.settings.registerAddonSettings({
       id: this.addonId,
       render: props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />
     });
@@ -48,14 +50,14 @@ export default class SpotifyInDiscord extends Plugin {
     vizality.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
 
     commands.unregisterCommands();
-    vizality.api.commands.unregisterCommand('spotify');
+    api.commands.unregisterCommand('spotify');
 
     const { container } = getModule('container', 'usernameContainer');
     const accountContainer = document.querySelector(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
     instance.forceUpdate();
 
-    vizality.api.settings.unregisterAddonSettings(this.addonId);
+    api.settings.unregisterAddonSettings(this.addonId);
   }
 
   async openPremiumDialog () {
@@ -121,7 +123,7 @@ export default class SpotifyInDiscord extends Plugin {
     // Handle track
     const currentTrack = playerStore.getCurrentTrack();
 
-    if (!currentTrack || currentTrack.id !== state.item.id) {
+    if (state.item?.id && (!currentTrack || currentTrack.id !== state.item.id)) {
       playerStoreActions.updateCurrentTrack({
         id: state.item.id,
         uri: state.item.uri,
@@ -137,6 +139,19 @@ export default class SpotifyInDiscord extends Plugin {
           album: state.item.album ? state.item.album.external_urls.spotify : null
         }
       });
+    } else if (!state.item?.id) {
+      playerStoreActions.updateCurrentTrack({
+        id: null,
+        uri: null,
+        name: 'Advertisement',
+        isLocal: true,
+        duration: 0,
+        explicit: null,
+        cover: SPOTIFY_DEFAULT_IMAGE,
+        artists: null,
+        album: null,
+        urls: null
+      });
     }
 
     // Handle state
@@ -151,6 +166,7 @@ export default class SpotifyInDiscord extends Plugin {
       canRepeatOne: !state.actions.disallows.toggling_repeat_track,
       canShuffle: !state.actions.disallows.toggling_shuffle,
       spotifyRecordedProgress: state.progress_ms,
+      currentlyPlayingType: state.currently_playing_type,
       playing: state.is_playing,
       volume: state.device.volume_percent
     });

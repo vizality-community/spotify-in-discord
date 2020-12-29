@@ -56,6 +56,10 @@ export default class SeekBar extends PureComponent {
   }
 
   async startSeek (e) {
+    if (this.props.disabled) {
+      return;
+    }
+
     this.seek(e);
     document.addEventListener('mousemove', this.seek);
     document.addEventListener('mouseup', this.endSeek);
