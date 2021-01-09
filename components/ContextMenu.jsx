@@ -4,7 +4,6 @@ import { clipboard, shell } from 'electron';
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
 import { Menu } from '@vizality/components';
 import { Messages } from '@vizality/i18n';
-import api from '@vizality/api';
 
 import playerStore from '../stores/player/store';
 import SpotifyAPI from '../SpotifyAPI';
@@ -64,7 +63,7 @@ const ContextMenu = memo(props => {
 
     return (
       <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={advertisement || cannotAll}>
+        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={cannotAll}>
           <Menu.MenuRadioItem
             id={`off${isOff ? '-active' : ''}`}
             group='repeat'
@@ -92,7 +91,7 @@ const ContextMenu = memo(props => {
           label='Shuffle'
           checked={playerState.shuffle}
           action={() => SpotifyAPI.setShuffleState(!playerState.shuffle)}
-          disabled={advertisement || !playerState.canShuffle}
+          disabled={!playerState.canShuffle}
         />
       </Menu.MenuGroup>
     );
@@ -177,9 +176,9 @@ const ContextMenu = memo(props => {
 });
 
 export default Flux.connectStores(
-  [ playerStore, api.settings.store ],
+  [ playerStore, vizality.api.settings.store ],
   props => ({
     ...playerStore.getStore(),
-    ...api.settings._fluxProps(props.addonId)
+    ...vizality.api.settings._fluxProps(props.addonId)
   })
 )(ContextMenu);

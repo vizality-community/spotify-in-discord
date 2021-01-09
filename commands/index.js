@@ -1,5 +1,3 @@
-import api from '@vizality/api';
-
 import previous from './previous';
 import history from './history';
 import lyrics from './lyrics';
@@ -18,7 +16,7 @@ export function getSettings () {
 }
 
 export function registerCommands () {
-  api.commands.registerCommand({
+  vizality.api.commands.registerCommand({
     command: 'spotify',
     description: 'Use commands to control Spotify within Discord.',
     usage: '{c} <previous | next | pause | play | resume | share | volume>',
@@ -58,5 +56,5 @@ export function unregisterCommands () {
 }
 
 export function unregisterCommand (name) {
-  api.commands.unregisterCommand(name);
+  vizality.api.commands.unregisterCommand(name);
 }

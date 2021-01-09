@@ -3,7 +3,7 @@ import React from 'react';
 import { ImageModal, LazyImageZoomable } from '@vizality/components';
 import { getImageDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
-import { joinClassNames } from '@vizality/util';
+import { joinClassNames } from '@vizality/util/dom';
 import { getModule } from '@vizality/webpack';
 
 import playerStore from '../stores/player/store';

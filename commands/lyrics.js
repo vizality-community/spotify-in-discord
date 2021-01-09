@@ -3,7 +3,7 @@ import React, { memo, useState } from 'react';
 import { Button, LazyImageZoomable, ImageModal, Anchor } from '@vizality/components';
 import { getImageDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
-import { joinClassNames } from '@vizality/util';
+import { joinClassNames } from '@vizality/util/dom';
 import { getModule } from '@vizality/webpack';
 import { chunk } from '@vizality/util/string';
 import { get } from '@vizality/http';

@@ -3,8 +3,7 @@ import { getOwnerInstance, findInTree } from '@vizality/util/react';
 import { waitForElement, setCssVariable } from '@vizality/util/dom';
 import { patch, unpatch } from '@vizality/patcher';
 import { Plugin } from '@vizality/entities';
-import { sleep } from '@vizality/util';
-import api from '@vizality/api';
+import { sleep } from '@vizality/util/time';
 
 import playerStoreActions from './stores/player/actions';
 import { SPOTIFY_DEFAULT_IMAGE } from './constants';
@@ -33,10 +32,10 @@ export default class SpotifyInDiscord extends Plugin {
     vizality.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
     SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
 
-    api.i18n.injectAllStrings(i18n);
+    vizality.api.i18n.injectAllStrings(i18n);
     playerStoreActions.fetchDevices();
 
-    api.settings.registerAddonSettings({
+    vizality.api.settings.registerAddonSettings({
       id: this.addonId,
       render: props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />
     });
@@ -50,14 +49,14 @@ export default class SpotifyInDiscord extends Plugin {
     vizality.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
 
     commands.unregisterCommands();
-    api.commands.unregisterCommand('spotify');
+    vizality.api.commands.unregisterCommand('spotify');
 
     const { container } = getModule('container', 'usernameContainer');
     const accountContainer = document.querySelector(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
     instance.forceUpdate();
 
-    api.settings.unregisterAddonSettings(this.addonId);
+    vizality.api.settings.unregisterAddonSettings(this.addonId);
   }
 
   async openPremiumDialog () {

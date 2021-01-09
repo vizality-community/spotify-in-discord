@@ -3,9 +3,8 @@ import { shell } from 'electron';
 
 import { AsyncComponent, Icon, HoverRoll, Flex } from '@vizality/components';
 import { Flux, getModule, contextMenu } from '@vizality/webpack';
-import { joinClassNames } from '@vizality/util';
+import { joinClassNames } from '@vizality/util/dom';
 import { Messages } from '@vizality/i18n';
-import api from '@vizality/api';
 
 import playerStoreActions from '../stores/player/actions';
 import { SPOTIFY_DEFAULT_IMAGE } from '../constants';
@@ -23,11 +22,6 @@ const Player = memo(props => {
   const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
 
   const renderButton = (tooltipText, icon, size, onClick, disabled, active) => {
-    if (advertisement) {
-      disabled = true;
-      onClick = () => void 0;
-    }
-
     return {
       ...base.props.children[2].props.children[0],
       props: {
@@ -199,9 +193,9 @@ const Player = memo(props => {
 });
 
 export default Flux.connectStores(
-  [ playerStore, api.settings.store ],
+  [ playerStore, vizality.api.settings.store ],
   props => ({
     ...playerStore.getStore(),
-    ...api.settings._fluxProps(props.addonId)
+    ...vizality.api.settings._fluxProps(props.addonId)
   })
 )(Player);

@@ -1,7 +1,7 @@
 {
   "name": "Spotify in Discord",
   "description": "Control Spotify from within Discord, and includes some other features like getting the currently playing song's lyrics and ablum art.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "MIT",
   "author": {
     "name": "dperolio",

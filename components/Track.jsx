@@ -2,8 +2,8 @@ import React, { memo } from 'react';
 
 import { getModule, messages, channels } from '@vizality/webpack';
 import { close as closeModal } from '@vizality/modal';
+import { joinClassNames } from '@vizality/util/dom';
 import { LazyImage } from '@vizality/components';
-import { joinClassNames } from '@vizality/util';
 
 import SpotifyAPI from '../SpotifyAPI';
 
