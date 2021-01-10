@@ -109,7 +109,7 @@ const Player = memo(props => {
       <Flex basis='auto' grow={1} shrink={0} className={'spotify-in-discord-player-controls'}>
         {renderShuffle()}
         {renderButton(() => Messages.PAGINATION_PREVIOUS, 'Previous', '16', () => SpotifyAPI.prev())}
-        {playerState.playing
+        {playerState.playing || advertisement
           ? renderButton(() => Messages.PAUSE, 'Pause', '16', () => SpotifyAPI.pause())
           : renderButton(() => Messages.PLAY, 'Play', '16', () => SpotifyAPI.play())
         }
