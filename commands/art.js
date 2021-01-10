@@ -12,8 +12,6 @@ import { SPOTIFY_COLOR } from '../constants';
 export default {
   command: 'art',
   description: 'Show the album art for the currently playing song.',
-  usage: '{c}',
-  category: 'Spotify',
   executor: async () => {
     const currentTrack = playerStore.getCurrentTrack();
 

@@ -54,8 +54,6 @@ const Lyrics = memo(({ lyrics }) => {
 export default {
   command: 'lyrics',
   description: 'Show the lyrics for the currently playing song.',
-  usage: '{c}',
-  category: 'Spotify',
   executor: async () => {
     const playerState = await SpotifyAPI.getPlayer();
     const currentTrack = playerStore.getCurrentTrack();

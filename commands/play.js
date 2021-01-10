@@ -12,8 +12,10 @@ const urlRegex = /\/track\/([A-z0-9]*)/;
 export default {
   command: 'play',
   description: 'Play a Spotify song URL, or search for a song to play.',
-  usage: '{c} [url | track]',
-  category: 'Spotify',
+  options: [
+    { name: 'url' },
+    { name: 'track' }
+  ],
   executor: async (url) => {
     if (!url.length) {
       const { embedSpotify } = getModule('embedSpotify');

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { LazyImageZoomable, ImageModal, Tooltip, Anchor } from '@vizality/components';
+import { millisecondsToTime } from '@vizality/util/time';
 import { getImageDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
 
@@ -11,15 +12,7 @@ import SpotifyAPI from '../SpotifyAPI';
 export default {
   command: 'history',
   description: 'Show your song play history.',
-  usage: '{c}',
-  category: 'Spotify',
   executor: async () => {
-    const millisToMinutesAndSeconds = (millis) => {
-      const minutes = Math.floor(millis / 60000);
-      const seconds = ((millis % 60000) / 1000).toFixed(0);
-      return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    };
-
     const songHistory = playerStore.getSongHistory();
 
     if (!songHistory.length) {
@@ -63,7 +56,7 @@ export default {
             </div>
           </Tooltip>
           <div className='spotify-in-discord-embed-song-history-grid-duration'>
-            {millisToMinutesAndSeconds(song.duration)}
+            {millisecondsToTime(song.duration)}
           </div>
         </div>
       );

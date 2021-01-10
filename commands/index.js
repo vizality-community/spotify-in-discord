@@ -19,7 +19,18 @@ export function registerCommands () {
   vizality.api.commands.registerCommand({
     command: 'spotify',
     description: 'Use commands to control Spotify within Discord.',
-    usage: '{c} <previous | next | pause | play | resume | share | volume>',
+    options: [
+      { name: 'play', required: true },
+      { name: 'pause', required: true },
+      { name: 'resume', required: true },
+      { name: 'previous', required: true },
+      { name: 'next', required: true },
+      { name: 'volume', required: true },
+      { name: 'art', required: true },
+      { name: 'share', required: true },
+      { name: 'lyrics', required: true },
+      { name: 'history', required: true }
+    ],
     executor: args => {
       const subcommand = commands[args[0]];
       if (!subcommand) {
@@ -34,8 +45,7 @@ export function registerCommands () {
     autocomplete: args => {
       if (args[0] !== void 0 && args.length === 1) {
         return {
-          commands: Object.values(commands).filter(({ command }) => command.includes(args[0].toLowerCase())),
-          header: 'spotify subcommands'
+          commands: Object.values(commands).filter(({ command }) => command.includes(args[0].toLowerCase()))
         };
       }
 

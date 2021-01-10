@@ -9,8 +9,9 @@ import SpotifyAPI from '../SpotifyAPI';
 export default {
   command: 'share',
   description: 'Send the currently playing song to current channel, or search for a song to share to the current channel.',
-  usage: '{c} [track]',
-  category: 'Spotify',
+  options: [
+    { name: 'track' }
+  ],
   async executor (query) {
     query = query.join(' ');
 
