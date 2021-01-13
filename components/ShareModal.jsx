@@ -46,7 +46,7 @@ export default memo(props => {
   const handleSearch = (query) => {
     setQuery(query);
 
-    const search = global._.debounce(() => fetchTracks(query), 500);
+    const search = window._.debounce(() => fetchTracks(query), 500);
 
     setSearchQuery(prevSearch => {
       if (prevSearch.cancel) {

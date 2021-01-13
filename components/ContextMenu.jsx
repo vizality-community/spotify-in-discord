@@ -20,7 +20,7 @@ const ContextMenu = memo(props => {
   };
 
   const handleVolumeSlide = volume => {
-    const vol = global._.debounce(() => setVolume(volume), 200);
+    const vol = window._.debounce(() => setVolume(volume), 200);
 
     setVol(prevVol => {
       if (prevVol.cancel) {

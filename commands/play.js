@@ -13,8 +13,8 @@ export default {
   command: 'play',
   description: 'Play a Spotify song URL, or search for a song to play.',
   options: [
-    { name: 'url' },
-    { name: 'track' }
+    { name: 'url', required: true },
+    { name: 'track', required: true }
   ],
   executor: async (url) => {
     if (!url.length) {

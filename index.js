@@ -22,9 +22,9 @@ export default class SpotifyInDiscord extends Plugin {
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
   }
 
-  onStart () {
-    setCssVariable('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness')}%`);
+  start () {
     this.injectStyles('styles/main.scss');
+    setCssVariable('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
 
     this._injectPlayer();
     this._patchAutoPause();
@@ -35,15 +35,12 @@ export default class SpotifyInDiscord extends Plugin {
     vizality.api.i18n.injectAllStrings(i18n);
     playerStoreActions.fetchDevices();
 
-    vizality.api.settings.registerAddonSettings({
-      id: this.addonId,
-      render: props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />
-    });
+    this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />);
 
     commands.registerCommands();
   }
 
-  onStop () {
+  stop () {
     unpatch('spotify-in-discord-player');
     this._patchAutoPause(true);
     vizality.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
@@ -55,14 +52,12 @@ export default class SpotifyInDiscord extends Plugin {
     const accountContainer = document.querySelector(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
     instance.forceUpdate();
-
-    vizality.api.settings.unregisterAddonSettings(this.addonId);
   }
 
   async openPremiumDialog () {
     const PremiumDialog = getModuleByDisplayName('SpotifyPremiumUpgrade');
-    const { openModal: openNewModal } = getModule('openModal', 'closeModal');
-    openNewModal(props => <PremiumDialog {...props} />);
+    const { openModal } = getModule('openModal', 'closeModal');
+    openModal(props => <PremiumDialog {...props} />);
   }
 
   async _injectPlayer () {
