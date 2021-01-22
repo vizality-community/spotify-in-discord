@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react';
 
 import { Button, LazyImageZoomable, ImageModal, Anchor } from '@vizality/components';
-import { getImageDimensions } from '@vizality/util/file';
+import { getMediaDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
 import { joinClassNames } from '@vizality/util/dom';
 import { getModule } from '@vizality/webpack';
@@ -119,7 +119,7 @@ export default {
       };
     }
 
-    const albumDimensions = await getImageDimensions(currentTrack.cover);
+    const albumDimensions = await getMediaDimensions(currentTrack.cover);
 
     const result = {
       type: 'rich',

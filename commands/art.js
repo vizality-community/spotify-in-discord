@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ImageModal, LazyImageZoomable } from '@vizality/components';
-import { getImageDimensions } from '@vizality/util/file';
+import { getMediaDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
 import { joinClassNames } from '@vizality/util/dom';
 import { getModule } from '@vizality/webpack';
@@ -30,7 +30,7 @@ export default {
       };
     }
 
-    const albumDimensions = await getImageDimensions(currentTrack.cover);
+    const albumDimensions = await getMediaDimensions(currentTrack.cover);
 
     const { coverImageWrapper, coverImageActionable, coverImage, blurred } = getModule('coverImageWrapper');
 

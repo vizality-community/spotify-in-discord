@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LazyImageZoomable, ImageModal, Tooltip, Anchor } from '@vizality/components';
 import { millisecondsToTime } from '@vizality/util/time';
-import { getImageDimensions } from '@vizality/util/file';
+import { getMediaDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
 
 import playerStore from '../stores/player/store';
@@ -25,7 +25,7 @@ export default {
     const items = [];
 
     const renderSongItem = async (song) => {
-      const albumDimensions = await getImageDimensions(song.cover);
+      const albumDimensions = await getMediaDimensions(song.cover);
       items.push(
         <div className='spotify-in-discord-embed-song-history-grid-row'>
           <div className='spotify-in-discord-embed-song-history-grid-row-title'>

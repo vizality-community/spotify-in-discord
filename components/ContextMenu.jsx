@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import { clipboard, shell } from 'electron';
 
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
-import { Menu } from '@vizality/components';
+import { ContextMenu } from '@vizality/components';
 import { Messages } from '@vizality/i18n';
 
 import playerStore from '../stores/player/store';
@@ -10,7 +10,7 @@ import SpotifyAPI from '../SpotifyAPI';
 
 const { closeContextMenu } = contextMenu;
 
-const ContextMenu = memo(props => {
+const Context = memo(props => {
   const { playerState, currentTrack, devices } = props;
   const [ , setVol ] = useState({});
   const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
@@ -35,23 +35,23 @@ const ContextMenu = memo(props => {
 
   const renderDevices = () => {
     return (
-      <Menu.MenuGroup>
-        <Menu.MenuItem id='devices' label='Devices'>
+      <ContextMenu.Group>
+        <ContextMenu.Item id='devices' label='Devices'>
           {devices.sort(d => -Number(d.is_active)).map((device, i) => {
             return (
               <>
-                <Menu.MenuItem
+                <ContextMenu.Item
                   id={device.id}
                   label={device.name}
                   hint={device.type}
                   disabled={i === 0}
                 />
-                {devices.length > 1 && (i !== devices.length - 1) && <Menu.MenuSeparator/>}
+                {devices.length > 1 && (i !== devices.length - 1) && <ContextMenu.Separator/>}
               </>
             );
           })}
-        </Menu.MenuItem>
-      </Menu.MenuGroup>
+        </ContextMenu.Item>
+      </ContextMenu.Group>
     );
   };
 
@@ -62,46 +62,46 @@ const ContextMenu = memo(props => {
     const isTrack = playerState.repeat === playerStore.RepeatState.REPEAT_TRACK;
 
     return (
-      <Menu.MenuGroup>
-        <Menu.MenuItem id='repeat' label='Repeat Mode' disabled={cannotAll}>
-          <Menu.MenuRadioItem
+      <ContextMenu.Group>
+        <ContextMenu.Item id='repeat' label='Repeat Mode' disabled={cannotAll}>
+          <ContextMenu.RadioItem
             id={`off${isOff ? '-active' : ''}`}
             group='repeat'
             label='No Repeat'
             checked={isOff}
             action={() => SpotifyAPI.setRepeatState('off')}
           />
-          <Menu.MenuRadioItem
+          <ContextMenu.RadioItem
             id={`context${isContext ? '-active' : ''}`}
             group='repeat'
             label='Repeat'
             checked={isContext}
             action={() => SpotifyAPI.setRepeatState('context')}
           />
-          <Menu.MenuRadioItem
+          <ContextMenu.RadioItem
             id={`track${isTrack ? '-active' : ''}`}
             group='repeat'
             label='Repeat Track'
             checked={isTrack}
             action={() => SpotifyAPI.setRepeatState('track')}
           />
-        </Menu.MenuItem>
-        <Menu.MenuCheckboxItem
+        </ContextMenu.Item>
+        <ContextMenu.CheckboxItem
           id='shuffle'
           label='Shuffle'
           checked={playerState.shuffle}
           action={() => SpotifyAPI.setShuffleState(!playerState.shuffle)}
           disabled={!playerState.canShuffle}
         />
-      </Menu.MenuGroup>
+      </ContextMenu.Group>
     );
   };
 
   const renderVolume = () => {
     const Slider = getModule(m => m.render && m.render.toString().includes('sliderContainer'), false);
     return (
-      <Menu.MenuGroup>
-        <Menu.MenuControlItem
+      <ContextMenu.Group>
+        <ContextMenu.ControlItem
           id='volume'
           label='Volume'
           control={(props, ref) => (
@@ -114,14 +114,14 @@ const ContextMenu = memo(props => {
             />
           )}
         />
-      </Menu.MenuGroup>
+      </ContextMenu.Group>
     );
   };
 
   const renderActions = () => {
     return (
-      <Menu.MenuGroup>
-        <Menu.MenuItem
+      <ContextMenu.Group>
+        <ContextMenu.Item
           id='open-spotify'
           label='Open in Spotify'
           disabled={advertisement}
@@ -130,7 +130,7 @@ const ContextMenu = memo(props => {
             shell.openExternal(protocol ? currentTrack.uri : currentTrack.urls.track);
           }}
         />
-        <Menu.MenuItem
+        <ContextMenu.Item
           id='send-album'
           disabled={advertisement || !currentTrack?.urls?.album}
           label='Send Album to Channel'
@@ -139,7 +139,7 @@ const ContextMenu = memo(props => {
             { content: currentTrack?.urls?.album }
           )}
         />
-        <Menu.MenuItem
+        <ContextMenu.Item
           id='send-song'
           label='Send Song to Channel'
           disabled={advertisement}
@@ -148,30 +148,30 @@ const ContextMenu = memo(props => {
             { content: currentTrack?.urls?.track }
           )}
         />
-        <Menu.MenuSeparator/>
-        <Menu.MenuItem
+        <ContextMenu.Separator/>
+        <ContextMenu.Item
           id='copy-album'
           disabled={advertisement || !currentTrack?.urls?.album}
           label='Copy Album URL'
           action={() => clipboard.writeText(currentTrack.urls.album)}
         />
-        <Menu.MenuItem
+        <ContextMenu.Item
           id='copy-song'
           label='Copy Song URL'
           disabled={advertisement}
           action={() => clipboard.writeText(currentTrack.urls.track)}
         />
-      </Menu.MenuGroup>
+      </ContextMenu.Group>
     );
   };
 
   return (
-    <Menu.Menu navId='spotify-in-discord-menu' onClose={closeContextMenu}>
+    <ContextMenu.Menu navId='spotify-in-discord-menu' onClose={closeContextMenu}>
       {renderDevices()}
       {renderPlaybackSettings()}
       {renderVolume()}
       {renderActions()}
-    </Menu.Menu>
+    </ContextMenu.Menu>
   );
 });
 
@@ -181,4 +181,4 @@ export default Flux.connectStores(
     ...playerStore.getStore(),
     ...vizality.api.settings._fluxProps(props.addonId)
   })
-)(ContextMenu);
+)(Context);
