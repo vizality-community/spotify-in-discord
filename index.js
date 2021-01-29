@@ -66,7 +66,7 @@ export default class SpotifyInDiscord extends Plugin {
     const accountContainer = await waitForElement(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
     await patch('spotify-in-discord-player', instance.__proto__, 'render', (_, res) => {
-      const realRes = findInTree(res, t => t.props && t.props.className === container);
+      const realRes = findInTree(res, t => t.props?.className === container);
       return [ <Player addonId={this.addonId} base={realRes} />, res ];
     });
     instance.forceUpdate();
