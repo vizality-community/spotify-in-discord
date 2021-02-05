@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import { clipboard, shell } from 'electron';
+import { debounce } from 'lodash';
 
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
 import { ContextMenu } from '@vizality/components';
@@ -20,7 +21,7 @@ const Context = memo(props => {
   };
 
   const handleVolumeSlide = volume => {
-    const vol = window._.debounce(() => setVolume(volume), 200);
+    const vol = debounce(() => setVolume(volume), 300);
 
     setVol(prevVol => {
       if (prevVol.cancel) {

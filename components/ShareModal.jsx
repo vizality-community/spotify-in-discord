@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
+import { debounce } from 'lodash';
 
 import { FormTitle, Text, Modal, SearchBar, Spinner } from '@vizality/components';
 import { close as closeModal } from '@vizality/modal';
@@ -46,7 +47,7 @@ export default memo(props => {
   const handleSearch = (query) => {
     setQuery(query);
 
-    const search = window._.debounce(() => fetchTracks(query), 500);
+    const search = debounce(() => fetchTracks(query), 500);
 
     setSearchQuery(prevSearch => {
       if (prevSearch.cancel) {
@@ -57,6 +58,10 @@ export default memo(props => {
     });
 
     search(query);
+  };
+
+  const clearSearch = () => {
+    return handleSearch('');
   };
 
   return (
@@ -73,8 +78,8 @@ export default memo(props => {
           <SearchBar
             placeholder={query}
             query={query}
-            onChange={query => handleSearch(query)}
-            onClear={() => handleSearch('')}
+            onChange={handleSearch}
+            onClear={clearSearch}
             className='spotify-in-discord-modal-search'
           />
         </Text>
