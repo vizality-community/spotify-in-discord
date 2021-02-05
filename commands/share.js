@@ -12,6 +12,7 @@ export default {
   options: [
     { name: 'track' }
   ],
+
   async executor (query) {
     query = query.join(' ');
 

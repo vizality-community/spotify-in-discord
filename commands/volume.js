@@ -6,5 +6,9 @@ export default {
   options: [
     { name: '0-100', require: true }
   ],
-  executor: volume => SpotifyAPI.setVolume(volume)
+  executor: volume => {
+    try {
+      SpotifyAPI.setVolume(Math.round(volume));
+    } catch (err) {}
+  }
 };
