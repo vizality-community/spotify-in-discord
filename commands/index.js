@@ -11,10 +11,6 @@ import art from './art';
 
 export const commands = { previous, history, lyrics, resume, volume, share, pause, next, play, art };
 
-export function getSettings () {
-  return vizality.manager.plugins.get('spotify-in-discord').settings;
-}
-
 export function registerCommands () {
   vizality.api.commands.registerCommand({
     command: 'spotify',
@@ -31,6 +27,7 @@ export function registerCommands () {
       { name: 'lyrics', required: true },
       { name: 'history', required: true }
     ],
+
     executor: args => {
       const subcommand = commands[args[0]];
       if (!subcommand) {
@@ -42,6 +39,7 @@ export function registerCommands () {
 
       return subcommand.executor(args.slice(1));
     },
+
     autocomplete: args => {
       if (args[0] !== void 0 && args.length === 1) {
         return {
@@ -54,17 +52,7 @@ export function registerCommands () {
         return false;
       }
 
-      return subcommand.autocomplete(args.slice(1), this.getSettings());
+      return subcommand.autocomplete(args.slice(1));
     }
   });
-}
-
-export function unregisterCommands () {
-  for (const subcommand of this.getSettings().getKeys()) {
-    this.unregisterCommand(subcommand);
-  }
-}
-
-export function unregisterCommand (name) {
-  vizality.api.commands.unregisterCommand(name);
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { waitForElement } from '@vizality/util/dom';
 import { open as openModal } from '@vizality/modal';
 import { getModule } from '@vizality/webpack';
 
@@ -13,36 +12,36 @@ export default {
   command: 'play',
   description: 'Play a Spotify song URL, or search for a song to play.',
   options: [
-    { name: 'url', required: true },
-    { name: 'track', required: true }
+    { name: 'track', required: false }
   ],
-  executor: async (url) => {
-    if (!url.length) {
-      const { embedSpotify } = getModule('embedSpotify');
-      const spotifyEmbeds = await waitForElement(`.${embedSpotify.split(' ')[0]}`, true);
-      const spotifyEmbed = spotifyEmbeds[spotifyEmbeds.length - 1];
-      url = spotifyEmbed && spotifyEmbed.src;
 
-      if (!url) {
+  executor: async (track) => {
+    if (!track.length) {
+      const { embedSpotify } = getModule('embedSpotify');
+      const spotifyEmbeds = document.querySelectorAll(`.${embedSpotify.split(' ')[0]}`);
+      const spotifyEmbed = spotifyEmbeds[spotifyEmbeds.length - 1];
+      track = spotifyEmbed && spotifyEmbed.src;
+
+      if (!track) {
         return {
           send: false,
-          result: 'No URL specified.'
+          result: 'No Spotify song was found in chat. Try specifying the track name next time.'
         };
       }
 
-      if (new RegExp(urlRegex.test(url))) {
+      if (new RegExp(urlRegex.test(track))) {
         await SpotifyAPI.play({
           uris: [
-            `spotify:track:${urlRegex.exec(url)[1]}`
+            `spotify:track:${urlRegex.exec(track)[1]}`
           ]
         });
       }
     } else {
-      const query = url;
+      const query = track;
       const result = await SpotifyAPI.search(query, 'track', 14);
       const closestTrack = result.tracks.items[0];
 
-      if (result.tracks.items.length) {
+      if (result.tracks.items.length > 1) {
         return openModal(() =>
           <ShareModal
             action='play'
