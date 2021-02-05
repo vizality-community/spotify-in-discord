@@ -70,12 +70,6 @@
       margin-right: 12px;
       flex: 0 0 auto;
       z-index: 1;
-      &-backdrop {
-        right: unset;
-        left: 0;
-        opacity: .4;
-        transform: scaleX(-1);
-      }
     }
     &-image-wrapper {
       @include size(100%);

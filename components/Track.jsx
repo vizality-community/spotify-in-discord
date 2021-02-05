@@ -27,16 +27,8 @@ export default memo(props => {
 
   const albumCover = item.album?.images[0]?.url || 'vz-plugin://spotify-in-discord/assets/spotify.png';
 
-  const { coverImageWrapper, coverImageActionable, coverImage, blurred } = getModule('coverImageWrapper');
-
   return (
     <div className='spotify-in-discord-modal-track' onClick={() => handleClick(item)}>
-      <div class={joinClassNames('spotify-in-discord-modal-track-image-backdrop', coverImageWrapper)}>
-        <div
-          style={{ backgroundImage: `url(${albumCover})` }}
-          class={joinClassNames('spotify-in-discord-modal-track-image-backdrop-blur', coverImageActionable, coverImage, blurred)}
-        />
-      </div>
       <div className='spotify-in-discord-modal-track-image'>
         <LazyImage
           className='spotify-in-discord-modal-track-image-wrapper'
