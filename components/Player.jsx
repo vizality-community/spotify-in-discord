@@ -166,7 +166,7 @@ const Player = memo(props => {
     };
   };
 
-  if (devices.length === 0 || !currentTrack) {
+  if (devices?.length === 0 || !currentTrack) {
     return null;
   }
 

@@ -22,7 +22,7 @@ export default class SpotifyInDiscord extends Plugin {
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
   }
 
-  start () {
+  async start () {
     this.injectStyles('styles/main.scss');
     setCSSCustomProperty('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
 
@@ -30,7 +30,10 @@ export default class SpotifyInDiscord extends Plugin {
     this._patchAutoPause();
 
     vizality.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
-    SpotifyAPI.getPlayer().then(player => this._handlePlayerState(player));
+    await SpotifyAPI.getAccessToken();
+    SpotifyAPI.getPlayer()
+      ?.then(player => this._handlePlayerState(player))
+      ?.catch(() => null);
 
     vizality.api.i18n.injectAllStrings(i18n);
     playerStoreActions.fetchDevices();
@@ -45,7 +48,6 @@ export default class SpotifyInDiscord extends Plugin {
     this._patchAutoPause(true);
     vizality.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
 
-    commands.unregisterCommands();
     vizality.api.commands.unregisterCommand('spotify');
 
     const { container } = getModule('container', 'usernameContainer');
@@ -112,7 +114,7 @@ export default class SpotifyInDiscord extends Plugin {
   }
 
   _handlePlayerState (state) {
-    if (!state.timestamp) return;
+    if (!state?.timestamp) return;
 
     // Handle track
     const currentTrack = playerStore.getCurrentTrack();

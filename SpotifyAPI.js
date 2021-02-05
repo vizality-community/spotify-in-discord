@@ -9,142 +9,207 @@ const { Endpoints } = constants;
 export default {
   accessToken: null,
 
+  get addon () {
+    return vizality.manager.plugins.get('spotify-in-discord');
+  },
+
   async getAccessToken () {
     const spotifyUserID = await http.get(Endpoints.CONNECTIONS)
-      .then(res =>
-        res.body.find(connection =>
-          connection.type === 'spotify'
-        ).id
-      )
-      .catch(() => console.error(`It looks like you don't have a Spotify account connected with Discord!`));
+      ?.then(res => res?.body.find(connection => connection?.type === 'spotify')?.id)
+      ?.catch(() => this.accessToken = 'NONE');
 
-    return spotify.getAccessToken(spotifyUserID)
-      .then(r => r.body.access_token);
+    if (!spotifyUserID) {
+      this.accessToken = 'NONE';
+      return this.addon.error(`It looks like you don't have a Spotify account connected with Discord!`);
+    }
+
+    this.accessToken = await spotify.getAccessToken(spotifyUserID)
+      ?.then(r => r?.body?.access_token)
+      ?.catch(() => this.accessToken = 'NONE');
   },
 
   genericRequest (request, isConnectWeb) {
-    request.set('Authorization', `Bearer ${this.accessToken}`);
-    if (isConnectWeb) {
-      const currentDeviceId = playerStore.getLastActiveDeviceId();
-      if (currentDeviceId) {
-        request.query('device_id', currentDeviceId);
+    if (this.accessToken === 'NONE') return;
+    if (this.accessToken && this.accessToken !== 'NONE') {
+      request.set('Authorization', `Bearer ${this.accessToken}`);
+      if (isConnectWeb) {
+        const currentDeviceId = playerStore.getLastActiveDeviceId();
+        if (currentDeviceId) {
+          request.query('device_id', currentDeviceId);
+        }
       }
     }
     return request
-      .catch(async (err) => {
-        if (err) {
-          if (err.statusCode === 401) {
-            this.accessToken = await this.getAccessToken();
-            delete request._res;
-            return this.genericRequest(request);
-          }
-          console.error(err.body, request.opts);
-          throw err;
-        }
-      });
+      .catch(async err => this.addon.error(err.body?.error?.message, request?.opts));
   },
 
   getTrack (trackId) {
-    return this.genericRequest(
-      get(`${SPOTIFY_BASE_URL}/tracks/${trackId}`)
-    ).then(r => r.body);
+    try {
+      return this.genericRequest(
+        get(`${SPOTIFY_BASE_URL}/tracks/${trackId}`)
+      )
+        ?.then(r => r?.body)
+        ?.catch(() => void 0);
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   search (query, type = 'track', limit = 20) {
-    return this.genericRequest(
-      get(`${SPOTIFY_BASE_URL}/search`)
-        .query('q', query)
-        .query('type', type)
-        .query('limit', limit)
-    ).then(r => r.body);
+    try {
+      return this.genericRequest(
+        get(`${SPOTIFY_BASE_URL}/search`)
+          .query('q', query)
+          .query('type', type)
+          .query('limit', limit)
+      )
+        ?.then(r => r?.body)
+        ?.catch(() => void 0);
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   play (data) {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/play`).send(data), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/play`).send(data), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   pause () {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/pause`), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/pause`), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   seek (position) {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/seek`).query('position_ms', position), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/seek`).query('position_ms', position), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   next () {
-    return this.genericRequest(
-      post(`${SPOTIFY_PLAYER_URL}/next`), true
-    );
+    try {
+      return this.genericRequest(
+        post(`${SPOTIFY_PLAYER_URL}/next`), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   prev () {
-    return this.genericRequest(
-      post(`${SPOTIFY_PLAYER_URL}/previous`), true
-    );
+    try {
+      return this.genericRequest(
+        post(`${SPOTIFY_PLAYER_URL}/previous`), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   getPlayer () {
-    return this.genericRequest(
-      get(SPOTIFY_PLAYER_URL)
-    ).then(r => r.body);
+    try {
+      return this.genericRequest(
+        get(SPOTIFY_PLAYER_URL)
+      )
+        ?.then(r => r?.body)
+        ?.catch(() => void 0);
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   getDevices () {
-    return this.genericRequest(
-      get(`${SPOTIFY_PLAYER_URL}/devices`)
-    ).then(r => r.body);
+    try {
+      return this.genericRequest(
+        get(`${SPOTIFY_PLAYER_URL}/devices`)
+      )
+        ?.then(r => r?.body)
+        ?.catch(() => void 0);
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   setVolume (volume) {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/volume`).query('volume_percent', volume), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/volume`).query('volume_percent', volume), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   setActiveDevice (deviceID) {
-    return this.genericRequest(
-      put(SPOTIFY_PLAYER_URL)
-        .send({
-          device_ids: [ deviceID ],
-          play: true
-        })
-    );
+    try {
+      return this.genericRequest(
+        put(SPOTIFY_PLAYER_URL)
+          .send({
+            device_ids: [ deviceID ],
+            play: true
+          })
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   setRepeatState (state) {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/repeat`).query('state', state), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/repeat`).query('state', state), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   setShuffleState (state) {
-    return this.genericRequest(
-      put(`${SPOTIFY_PLAYER_URL}/shuffle`).query('state', state), true
-    );
+    try {
+      return this.genericRequest(
+        put(`${SPOTIFY_PLAYER_URL}/shuffle`).query('state', state), true
+      );
+    } catch (err) {
+      return this.addon.error(err);
+    }
   },
 
   async _fetchAll (url, limit, offset) {
-    const items = [];
-    while (url) {
-      const req = get(url);
-      if (limit) {
-        req.query('limit', limit);
-        limit = 0;
+    try {
+      const items = [];
+      while (url) {
+        const req = get(url);
+        if (limit) {
+          req.query('limit', limit);
+          limit = 0;
+        }
+        if (offset) {
+          req.query('offset', offset);
+          offset = 0;
+        }
+        const res = await this.genericRequest(req)
+          ?.then(r => r?.body)
+          ?.catch(() => void 0);
+        items.push(...res.items);
+        url = res.next;
       }
-      if (offset) {
-        req.query('offset', offset);
-        offset = 0;
-      }
-      const res = await this.genericRequest(req).then(r => r.body);
-      items.push(...res.items);
-      url = res.next;
+      return items;
+    } catch (err) {
+      return this.addon.error(err);
     }
-    return items;
   }
 };

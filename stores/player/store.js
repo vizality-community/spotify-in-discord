@@ -28,7 +28,7 @@ export let playerState = {
 
 export function handleDevicesFetched (fetchedDevices) {
   devices = fetchedDevices;
-  const activeDevice = devices.find(d => d.is_active);
+  const activeDevice = devices?.find(d => d?.is_active);
   if (activeDevice) {
     lastActiveDeviceId = activeDevice.id;
   }

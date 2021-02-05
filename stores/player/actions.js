@@ -5,7 +5,7 @@ import SpotifyAPI from '../../SpotifyAPI';
 
 export default {
   fetchDevices: async () => {
-    const { devices } = await SpotifyAPI.getDevices();
+    const devices = await SpotifyAPI.getDevices()?.devices;
     FluxDispatcher.dirtyDispatch({
       type: FluxActions.DEVICES_FETCHED,
       devices
