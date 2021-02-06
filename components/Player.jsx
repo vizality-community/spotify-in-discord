@@ -31,7 +31,12 @@ const Player = memo(props => {
         tooltipText: tooltipText(),
         onClick,
         disabled,
-        onContextMenu: e => contextMenu.openContextMenu(e, () => <ContextMenu />)
+        onContextMenu: e => contextMenu.openContextMenu(e, () =>
+          <ContextMenu
+            currentTrack={currentTrack}
+            playerState={playerState}
+          />
+        )
       }
     };
   };
@@ -166,29 +171,27 @@ const Player = memo(props => {
     };
   };
 
-  if (devices?.length === 0 || !currentTrack) {
-    return null;
-  }
-
   return (
-    <div className='spotify-in-discord-player'>
-      {renderFromBase()}
-      <SeekBar
-        disabled={playerState.currentlyPlayingType === 'ad'}
-        isPlaying={playerState.playing}
-        duration={currentTrack.duration}
-        progress={playerState.spotifyRecordedProgress}
-        progressAt={playerState.spotifyRecordedProgressAt}
-        onSeeking={seeking => setSeeking(seeking)}
-        onDurationOverflow={() => {
-          const playerState = playerStore.getPlayerState();
-          playerStoreActions.updatePlayerState({
-            ...playerState,
-            playing: false
-          });
-        }}
-      />
-    </div>
+    devices?.length === 0 || !currentTrack
+      ? null
+      : <div className='spotify-in-discord-player'>
+        {renderFromBase()}
+        <SeekBar
+          disabled={playerState.currentlyPlayingType === 'ad'}
+          isPlaying={playerState.playing}
+          duration={currentTrack.duration}
+          progress={playerState.spotifyRecordedProgress}
+          progressAt={playerState.spotifyRecordedProgressAt}
+          onSeeking={seeking => setSeeking(seeking)}
+          onDurationOverflow={() => {
+            const playerState = playerStore.getPlayerState();
+            playerStoreActions.updatePlayerState({
+              ...playerState,
+              playing: false
+            });
+          }}
+        />
+      </div>
   );
 });
 
