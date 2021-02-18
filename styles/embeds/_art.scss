@@ -1,9 +1,9 @@
-@use '@vizality' as *;
+@use '@vizality' as vz;
 
 .spotify-in-discord-embed {
   &-large-album-art {
     &-wrapper {
-      @include size(300px);
+      @include vz.size(300px);
     }
     &-image {
       &-backdrop {
@@ -15,7 +15,7 @@
       }
     }
     &-img {
-      @include size(100%);
+      @include vz.size(100%);
     }
   }
 }

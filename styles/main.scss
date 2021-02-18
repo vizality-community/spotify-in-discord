@@ -1,4 +1,4 @@
-@use '@vizality' as *;
+@use '@vizality' as vz;
 
 @use 'modal';
 @use 'embeds';
@@ -31,7 +31,7 @@
     }
   }
   &-album-cover {
-    @include size(32px);
+    @include vz.size(32px);
     z-index: 4;
     position: relative;
     background-size: contain;
@@ -46,7 +46,6 @@
     position: relative;
     align-items: center;
     overflow: hidden;
-    margin-top: -2px;
     height: 32px;
   }
   &-control-button {
@@ -54,7 +53,7 @@
     padding: 7px;
   }
   &-controls {
-    @include size(100%);
+    @include vz.size(100%);
     align-items: center;
     justify-content: space-around;
     pointer-events: all;
@@ -119,7 +118,7 @@
         height: 100%;
       }
       &-cursor {
-        background-color: #ffffff;
+        background-color: var(--header-primary);
         border-radius: 50%;
         bottom: -3px;
         width: 10px;

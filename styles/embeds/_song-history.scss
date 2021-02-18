@@ -1,4 +1,4 @@
-@use '@vizality' as *;
+@use '@vizality' as vz;
 
 .spotify-in-discord-embed {
   &-song-history {
@@ -27,7 +27,7 @@
       align-items: center;
       column-gap: 20px;
       font-size: 14px;
-      border-bottom: 1px solid color('white', .03);
+      border-bottom: 1px solid vz.color('white', .03);
       &:hover {
         background: var(--background-modifier-accent);
         border-color: transparent;
@@ -45,12 +45,12 @@
     }
     &-grid-title {
       &-text {
-        @include ellipsis;
+        @include vz.ellipsis;
         cursor: pointer;
       }
     }
     &-grid-artist {
-      @include ellipsis;
+      @include vz.ellipsis;
     }
     &-album-art-image-wrapper {
       margin-right: 10px;

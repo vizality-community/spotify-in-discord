@@ -1,4 +1,4 @@
-@use '@vizality' as *;
+@use '@vizality' as vz;
 
 .spotify-in-discord-embed {
   &-show-more-button {
@@ -13,14 +13,14 @@
       flex-direction: column;
       overflow: hidden;
       &-name {
-        @include ellipsis;
+        @include vz.ellipsis;
         font-size: 16px;
         font-weight: 600;
         line-height: 1.4;
         color: var(--header-primary);
       }
       &-artist {
-        @include ellipsis;
+        @include vz.ellipsis;
       }
       &-wrapper {
         display: flex;
