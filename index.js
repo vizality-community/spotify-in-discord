@@ -23,6 +23,7 @@ export default class SpotifyInDiscord extends Plugin {
   }
 
   async start () {
+    vizality.api.i18n.injectAllStrings(i18n);
     this.injectStyles('styles/main.scss');
     setCSSCustomProperty('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
 
@@ -35,7 +36,6 @@ export default class SpotifyInDiscord extends Plugin {
       ?.then(player => this._handlePlayerState(player))
       ?.catch(() => null);
 
-    vizality.api.i18n.injectAllStrings(i18n);
     playerStoreActions.fetchDevices();
 
     this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />);

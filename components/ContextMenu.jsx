@@ -3,7 +3,7 @@ import { clipboard, shell } from 'electron';
 import { debounce } from 'lodash';
 
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
-import { ContextMenu } from '@vizality/components';
+import { ContextMenu, Text, Tooltip } from '@vizality/components';
 import { Messages } from '@vizality/i18n';
 
 import playerStore from '../stores/player/store';
@@ -97,50 +97,64 @@ const Menu = memo(props => {
     );
   };
 
+  const Pie = () => (
+    <Tooltip text='Due to inactivity or logging into a different account, you may need to update your Spotify access token.' color={Tooltip.Colors.GREEN}>
+        Refresh Access Token
+    </Tooltip>
+  );
+
   const renderActions = () => {
     return (
-      <ContextMenu.Group>
+      <>
+        <ContextMenu.Group>
+          <ContextMenu.Item
+            id='open-spotify'
+            label='Open in Spotify'
+            disabled={advertisement}
+            action={() => {
+              const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
+              shell.openExternal(protocol ? currentTrack?.uri : currentTrack?.urls?.track);
+            }}
+          />
+          <ContextMenu.Item
+            id='send-album'
+            disabled={advertisement || !currentTrack?.urls?.album}
+            label='Send Album to Channel'
+            action={() => messages.sendMessage(
+              channels.getChannelId(),
+              { content: currentTrack?.urls?.album }
+            )}
+          />
+          <ContextMenu.Item
+            id='send-song'
+            label='Send Song to Channel'
+            disabled={advertisement}
+            action={() => messages.sendMessage(
+              channels.getChannelId(),
+              { content: currentTrack?.urls?.track }
+            )}
+          />
+          <ContextMenu.Separator/>
+          <ContextMenu.Item
+            id='copy-album'
+            disabled={advertisement || !currentTrack?.urls?.album}
+            label='Copy Album URL'
+            action={() => clipboard.writeText(currentTrack?.urls?.album)}
+          />
+          <ContextMenu.Item
+            id='copy-song'
+            label='Copy Song URL'
+            disabled={advertisement}
+            action={() => clipboard.writeText(currentTrack?.urls?.track)}
+          />
+        </ContextMenu.Group>
+        <ContextMenu.Separator />
         <ContextMenu.Item
-          id='open-spotify'
-          label='Open in Spotify'
-          disabled={advertisement}
-          action={() => {
-            const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
-            shell.openExternal(protocol ? currentTrack?.uri : currentTrack?.urls?.track);
-          }}
+          id='reload-player'
+          label={() => Pie()}
+          action={async () => SpotifyAPI.getAccessToken()}
         />
-        <ContextMenu.Item
-          id='send-album'
-          disabled={advertisement || !currentTrack?.urls?.album}
-          label='Send Album to Channel'
-          action={() => messages.sendMessage(
-            channels.getChannelId(),
-            { content: currentTrack?.urls?.album }
-          )}
-        />
-        <ContextMenu.Item
-          id='send-song'
-          label='Send Song to Channel'
-          disabled={advertisement}
-          action={() => messages.sendMessage(
-            channels.getChannelId(),
-            { content: currentTrack?.urls?.track }
-          )}
-        />
-        <ContextMenu.Separator/>
-        <ContextMenu.Item
-          id='copy-album'
-          disabled={advertisement || !currentTrack?.urls?.album}
-          label='Copy Album URL'
-          action={() => clipboard.writeText(currentTrack?.urls?.album)}
-        />
-        <ContextMenu.Item
-          id='copy-song'
-          label='Copy Song URL'
-          disabled={advertisement}
-          action={() => clipboard.writeText(currentTrack?.urls?.track)}
-        />
-      </ContextMenu.Group>
+      </>
     );
   };
 

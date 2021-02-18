@@ -40,7 +40,9 @@ export default {
       }
     }
     return request
-      .catch(async err => this.addon.error(err.body?.error?.message, request?.opts));
+      .catch(async err => {
+        return this.addon.error(err?.body?.error?.message, request?.opts);
+      });
   },
 
   getTrack (trackId) {
