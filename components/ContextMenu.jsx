@@ -3,7 +3,7 @@ import { clipboard, shell } from 'electron';
 import { debounce } from 'lodash';
 
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
-import { ContextMenu, Text, Tooltip } from '@vizality/components';
+import { ContextMenu, Tooltip } from '@vizality/components';
 import { Messages } from '@vizality/i18n';
 
 import playerStore from '../stores/player/store';

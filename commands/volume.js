@@ -4,7 +4,7 @@ export default {
   command: 'volume',
   description: 'Sets your Spotify volume.',
   options: [
-    { name: '0-100', require: true }
+    { name: '0-100', required: true }
   ],
   executor: volume => {
     try {
