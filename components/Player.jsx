@@ -30,7 +30,7 @@ const Player = memo(props => {
         icon: () => <Icon name={icon} size={size} vz-active={Boolean(active) && ''} />,
         tooltipText: tooltipText(),
         onClick,
-        disabled,
+        disabled: disabled || advertisement,
         onContextMenu: e => contextMenu.openContextMenu(e, () =>
           <ContextMenu
             currentTrack={currentTrack}

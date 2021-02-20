@@ -98,8 +98,8 @@ const Menu = memo(props => {
   };
 
   const Pie = () => (
-    <Tooltip text='Due to inactivity or logging into a different account, you may need to update your Spotify access token.' color={Tooltip.Colors.GREEN}>
-        Refresh Access Token
+    <Tooltip text='Due to inactivity or logging into a different account, you may need to reload the plugin.' color={Tooltip.Colors.GREEN}>
+        Reload Plugin
     </Tooltip>
   );
 
@@ -152,7 +152,7 @@ const Menu = memo(props => {
         <ContextMenu.Item
           id='reload-player'
           label={() => Pie()}
-          action={async () => SpotifyAPI.getAccessToken()}
+          action={async () => vizality.manager.plugins.reload('spotify-in-discord')}
         />
       </>
     );

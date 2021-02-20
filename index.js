@@ -31,12 +31,14 @@ export default class SpotifyInDiscord extends Plugin {
     this._patchAutoPause();
 
     vizality.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
+
     await SpotifyAPI.getAccessToken();
     SpotifyAPI.getPlayer()
       ?.then(player => this._handlePlayerState(player))
       ?.catch(() => null);
 
-    playerStoreActions.fetchDevices();
+    playerStoreActions.fetchDevices()
+      ?.catch(() => null);
 
     this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />);
 
