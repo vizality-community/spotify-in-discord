@@ -21,14 +21,12 @@ export default {
       const spotifyEmbeds = document.querySelectorAll(`.${embedSpotify.split(' ')[0]}`);
       const spotifyEmbed = spotifyEmbeds[spotifyEmbeds.length - 1];
       track = spotifyEmbed && spotifyEmbed.src;
-
       if (!track) {
         return {
           send: false,
           result: 'No Spotify song was found in chat. Try specifying the track name next time.'
         };
       }
-
       if (new RegExp(urlRegex.test(track))) {
         await SpotifyAPI.play({
           uris: [
@@ -39,8 +37,7 @@ export default {
     } else {
       const query = track;
       const result = await SpotifyAPI.search(query, 'track', 14);
-      const closestTrack = result.tracks.items[0];
-
+      const closestTrack = result?.tracks?.items[0];
       if (result.tracks.items.length > 1) {
         return openModal(() =>
           <ShareModal
@@ -57,7 +54,6 @@ export default {
           result: closestTrack.external_urls.spotify
         };
       }
-
       return {
         send: false,
         result: `Couldn't find any song matching "\`${query}\`". Try searching again using a different spelling or keyword.`

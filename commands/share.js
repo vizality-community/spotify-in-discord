@@ -18,7 +18,7 @@ export default {
 
     if (query.length > 0) {
       const result = await SpotifyAPI.search(query, 'track', 14);
-      const closestTrack = result.tracks.items[0];
+      const closestTrack = result?.tracks?.items[0];
 
       if (result.tracks.items.length > 1) {
         return openModal(() =>
