@@ -29,7 +29,7 @@ const Menu = memo(props => {
 
   const handleVolumeSlide = volume => {
     try {
-      const vol = debounce(() => setVolume(volume), 300);
+      const vol = debounce(() => setVolume(volume), 200);
       setVol(prevVol => {
         if (prevVol.cancel) {
           prevVol.cancel();
@@ -120,7 +120,7 @@ const Menu = memo(props => {
               mini
               ref={ref}
               value={playerState?.volume}
-              onValueChange={handleVolumeSlide}
+              onChange={handleVolumeSlide}
               {...props}
             />
           )}
