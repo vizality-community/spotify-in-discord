@@ -36,7 +36,9 @@ export function handleDevicesFetched (fetchedDevices) {
 
 export function handleCurrentTrackUpdated (track) {
   currentTrack = track;
-  songHistory.push(track);
+  if (track && track.name !== 'Advertisement') {
+    songHistory.push(track);
+  }
 }
 
 export function handlePlayerStateUpdated (state) {

@@ -1,6 +1,6 @@
 import { React, getModule, spotify, getModuleByDisplayName } from '@vizality/webpack';
 import { getOwnerInstance, findInTree } from '@vizality/util/react';
-import { waitForElement, setCSSCustomProperty } from '@vizality/util/dom';
+import { waitForElement, setCssCustomProperty } from '@vizality/util/dom';
 import { patch, unpatch } from '@vizality/patcher';
 import { Plugin } from '@vizality/entities';
 import { sleep } from '@vizality/util/time';
@@ -25,7 +25,7 @@ export default class SpotifyInDiscord extends Plugin {
   async start () {
     vizality.api.i18n.injectAllStrings(i18n);
     this.injectStyles('styles/main.scss');
-    setCSSCustomProperty('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
+    setCssCustomProperty('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
 
     this._injectPlayer();
     this._patchAutoPause();
@@ -120,8 +120,13 @@ export default class SpotifyInDiscord extends Plugin {
 
     // Handle track
     const currentTrack = playerStore.getCurrentTrack();
+    if ((state.item?.id || state.item?.is_local) && (!currentTrack || currentTrack.id !== state.item?.id || currentTrack.name !== state.item?.name)) {
+      const { theme } = getModule('renderEmbeds', 'renderReactions', 'renderSpoilers');
+      const cover =
+        state.item.album && state.item.album.images[0]
+          ? state.item.album.images[0].url
+          : `vz-plugin://spotify-in-discord/assets/placeholder-${theme}.png`;
 
-    if (state.item?.id && (!currentTrack || currentTrack.id !== state.item.id)) {
       playerStoreActions.updateCurrentTrack({
         id: state.item.id,
         uri: state.item.uri,
@@ -129,15 +134,15 @@ export default class SpotifyInDiscord extends Plugin {
         isLocal: state.item.is_local,
         duration: state.item.duration_ms,
         explicit: state.item.explicit,
-        cover: state.item.album && state.item.album.images[0] ? state.item.album.images[0].url : null,
-        artists: state.item.artists.map(a => a.name).join(', '),
+        cover,
+        artists: state.item.artists.map(a => a.name).join(', ') || 'Unknwon',
         album: state.item.album ? state.item.album.name : null,
         urls: {
           track: state.item.external_urls.spotify,
           album: state.item.album ? state.item.album.external_urls.spotify : null
         }
       });
-    } else if (!state.item?.id) {
+    } else if (state?.currently_playing_type === 'ad') {
       playerStoreActions.updateCurrentTrack({
         id: null,
         uri: null,

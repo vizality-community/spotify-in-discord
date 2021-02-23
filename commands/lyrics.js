@@ -4,8 +4,8 @@ import { Button, LazyImageZoomable, ImageModal, Anchor } from '@vizality/compone
 import { getMediaDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
 import { joinClassNames } from '@vizality/util/dom';
+import { chunkText } from '@vizality/util/string';
 import { getModule } from '@vizality/webpack';
-import { chunk } from '@vizality/util/string';
 import { get } from '@vizality/http';
 
 import playerStore from '../stores/player/store';
@@ -26,7 +26,7 @@ const getTitle = (title, artist) => {
 };
 
 const Lyrics = memo(({ lyrics }) => {
-  const slicedLyrics = `${chunk(lyrics, 300)[0]}...`;
+  const slicedLyrics = `${chunkText(lyrics, 300)[0]}...`;
   const [ lyricz, setLyricz ] = useState(lyrics && lyrics.length > 300 ? slicedLyrics : lyrics);
   const { marginTop20 } = getModule('marginTop20');
 

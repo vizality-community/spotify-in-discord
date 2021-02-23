@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import { SwitchItem, SliderInput } from '@vizality/components/settings';
-import { setCSSCustomProperty } from '@vizality/util/dom';
+import { setCssCustomProperty } from '@vizality/util/dom';
 
 export default memo(({ getSetting, updateSetting, toggleSetting, patch }) => {
   return (
@@ -15,7 +15,7 @@ export default memo(({ getSetting, updateSetting, toggleSetting, patch }) => {
         onValueChange={v => {
           v = Math.floor(v);
           updateSetting('coverRoundness', v);
-          setCSSCustomProperty('spotify-in-discord__player-album-border-radius', `${v}%`);
+          setCssCustomProperty('spotify-in-discord__player-album-border-radius', `${v}%`);
         }}
       >
         Change Album Cover Roundness

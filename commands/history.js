@@ -4,6 +4,7 @@ import { LazyImageZoomable, ImageModal, Tooltip, Anchor } from '@vizality/compon
 import { millisecondsToTime } from '@vizality/util/time';
 import { getMediaDimensions } from '@vizality/util/file';
 import { open as openModal } from '@vizality/modal';
+import { error } from '@vizality/util/logger';
 
 import playerStore from '../stores/player/store';
 import { SPOTIFY_COLOR } from '../constants';
@@ -24,7 +25,7 @@ export default {
 
     const items = [];
 
-    const renderSongItem = async (song) => {
+    const renderSongItem = async song => {
       const albumDimensions = await getMediaDimensions(song.cover);
       items.push(
         <div className='spotify-in-discord-embed-song-history-grid-row'>
@@ -45,7 +46,14 @@ export default {
             />
             <Anchor
               className='spotify-in-discord-embed-song-history-grid-title-text'
-              onClick={() => SpotifyAPI.play({ uris: [ song.uri ] })}
+              onClick={() => {
+                try {
+                  if (song?.uri?.startsWith('spotify:local:')) return;
+                  SpotifyAPI.play({ uris: [ song.uri ] });
+                } catch (err) {
+                  error({ labels: [ 'Plugin', 'Spotify in Discord' ], message: err });
+                }
+              }}
             >
               {song.name}
             </Anchor>

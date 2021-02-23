@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 
 import { Flux, getModule, messages, channels, contextMenu } from '@vizality/webpack';
 import { ContextMenu, Tooltip } from '@vizality/components';
+import { error } from '@vizality/util/logger';
 import { Messages } from '@vizality/i18n';
 
 import playerStore from '../stores/player/store';
@@ -11,27 +12,34 @@ import SpotifyAPI from '../SpotifyAPI';
 
 const { closeContextMenu } = contextMenu;
 
+const _error = (...message) => error({ labels: [ 'Plugin', 'Spotify in Discord' ], message });
+
 const Menu = memo(props => {
   const { playerState, currentTrack } = props;
   const [ , setVol ] = useState({});
   const advertisement = Boolean(playerState?.currentlyPlayingType === 'ad');
 
   const setVolume = volume => {
-    SpotifyAPI.setVolume(Math.round(volume));
+    try {
+      SpotifyAPI.setVolume(Math.round(volume));
+    } catch (err) {
+      _error(err);
+    }
   };
 
   const handleVolumeSlide = volume => {
-    const vol = debounce(() => setVolume(volume), 300);
-
-    setVol(prevVol => {
-      if (prevVol.cancel) {
-        prevVol.cancel();
-      }
-
-      return vol;
-    });
-
-    vol(volume);
+    try {
+      const vol = debounce(() => setVolume(volume), 300);
+      setVol(prevVol => {
+        if (prevVol.cancel) {
+          prevVol.cancel();
+        }
+        return vol;
+      });
+      vol(volume);
+    } catch (err) {
+      _error(err);
+    }
   };
 
   const renderPlaybackSettings = () => {
@@ -48,28 +56,52 @@ const Menu = memo(props => {
             group='repeat'
             label='No Repeat'
             checked={isOff}
-            action={() => SpotifyAPI.setRepeatState('off')}
+            action={() => {
+              try {
+                SpotifyAPI.setRepeatState('off');
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
           <ContextMenu.RadioItem
             id={`context${isContext ? '-active' : ''}`}
             group='repeat'
             label='Repeat'
             checked={isContext}
-            action={() => SpotifyAPI.setRepeatState('context')}
+            action={() => {
+              try {
+                SpotifyAPI.setRepeatState('context');
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
           <ContextMenu.RadioItem
             id={`track${isTrack ? '-active' : ''}`}
             group='repeat'
             label='Repeat Track'
             checked={isTrack}
-            action={() => SpotifyAPI.setRepeatState('track')}
+            action={() => {
+              try {
+                SpotifyAPI.setRepeatState('track');
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
         </ContextMenu.Item>
         <ContextMenu.CheckboxItem
           id='shuffle'
           label='Shuffle'
           checked={playerState?.shuffle}
-          action={() => SpotifyAPI.setShuffleState(!playerState?.shuffle)}
+          action={() => {
+            try {
+              SpotifyAPI.setShuffleState(!playerState?.shuffle);
+            } catch (err) {
+              _error(err);
+            }
+          }}
           disabled={!playerState?.canShuffle}
         />
       </ContextMenu.Group>
@@ -88,7 +120,7 @@ const Menu = memo(props => {
               mini
               ref={ref}
               value={playerState?.volume}
-              onChange={handleVolumeSlide}
+              onValueChange={handleVolumeSlide}
               {...props}
             />
           )}
@@ -97,9 +129,13 @@ const Menu = memo(props => {
     );
   };
 
-  const Pie = () => (
-    <Tooltip text='Due to inactivity or logging into a different account, you may need to reload the plugin.' color={Tooltip.Colors.GREEN}>
-        Reload Plugin
+  const ReloadText = () => (
+    <Tooltip
+      text='Due to inactivity or logging into a different account, you may need to reload the plugin.'
+      color={Tooltip.Colors.GREEN}
+      position={Tooltip.Positions.RIGHT}
+    >
+      Reload Plugin
     </Tooltip>
   );
 
@@ -112,47 +148,79 @@ const Menu = memo(props => {
             label='Open in Spotify'
             disabled={advertisement}
             action={() => {
-              const protocol = getModule('isProtocolRegistered', '_dispatchToken').isProtocolRegistered();
-              shell.openExternal(protocol ? currentTrack?.uri : currentTrack?.urls?.track);
+              try {
+                const protocol = getModule('isProtocolRegistered', '_dispatchToken')?.isProtocolRegistered();
+                shell.openExternal(protocol ? currentTrack?.uri : currentTrack?.urls?.track);
+              } catch (err) {
+                _error(err);
+              }
             }}
           />
           <ContextMenu.Item
             id='send-album'
             disabled={advertisement || !currentTrack?.urls?.album}
             label='Send Album to Channel'
-            action={() => messages.sendMessage(
-              channels.getChannelId(),
-              { content: currentTrack?.urls?.album }
-            )}
+            action={() => {
+              try {
+                messages.sendMessage(channels.getChannelId(), { content: currentTrack?.urls?.album });
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
           <ContextMenu.Item
             id='send-song'
             label='Send Song to Channel'
-            disabled={advertisement}
-            action={() => messages.sendMessage(
-              channels.getChannelId(),
-              { content: currentTrack?.urls?.track }
-            )}
+            disabled={advertisement || !currentTrack?.urls?.track}
+            action={() => {
+              try {
+                if (currentTrack?.urls?.track) {
+                  messages.sendMessage(channels.getChannelId(), { content: currentTrack?.urls?.track });
+                }
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
           <ContextMenu.Separator/>
           <ContextMenu.Item
             id='copy-album'
             disabled={advertisement || !currentTrack?.urls?.album}
             label='Copy Album URL'
-            action={() => clipboard.writeText(currentTrack?.urls?.album)}
+            action={() => {
+              try {
+                clipboard.writeText(currentTrack?.urls?.album);
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
           <ContextMenu.Item
             id='copy-song'
             label='Copy Song URL'
-            disabled={advertisement}
-            action={() => clipboard.writeText(currentTrack?.urls?.track)}
+            disabled={advertisement || !currentTrack?.urls?.track}
+            action={() => {
+              try {
+                if (currentTrack?.urls?.track) {
+                  clipboard.writeText(currentTrack?.urls?.track);
+                }
+              } catch (err) {
+                _error(err);
+              }
+            }}
           />
         </ContextMenu.Group>
         <ContextMenu.Separator />
         <ContextMenu.Item
           id='reload-player'
-          label={() => Pie()}
-          action={async () => vizality.manager.plugins.reload('spotify-in-discord')}
+          label={() => ReloadText()}
+          action={async () => {
+            try {
+              vizality.manager.plugins.reload('spotify-in-discord');
+            } catch (err) {
+              _error(err);
+            }
+          }}
         />
       </>
     );
