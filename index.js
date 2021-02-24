@@ -18,7 +18,6 @@ import * as i18n from './i18n';
 export default class SpotifyInDiscord extends Plugin {
   constructor () {
     super();
-
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
   }
 
@@ -135,7 +134,7 @@ export default class SpotifyInDiscord extends Plugin {
         duration: state.item.duration_ms,
         explicit: state.item.explicit,
         cover,
-        artists: state.item.artists.map(a => a.name).join(', ') || 'Unknwon',
+        artists: state.item.artists.map(a => a.name).join(', ') || 'Unknown',
         album: state.item.album ? state.item.album.name : null,
         urls: {
           track: state.item.external_urls.spotify,
