@@ -1,6 +1,6 @@
 import { React, getModule, spotify, getModuleByDisplayName } from '@vizality/webpack';
 import { getOwnerInstance, findInTree } from '@vizality/util/react';
-import { waitForElement, setCssCustomProperty } from '@vizality/util/dom';
+import { waitForElement } from '@vizality/util/dom';
 import { patch, unpatch } from '@vizality/patcher';
 import { Plugin } from '@vizality/entities';
 import { sleep } from '@vizality/util/time';
@@ -24,7 +24,7 @@ export default class SpotifyInDiscord extends Plugin {
   async start () {
     vizality.api.i18n.injectAllStrings(i18n);
     this.injectStyles('styles/main.scss');
-    setCssCustomProperty('spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
+    document.documentElement.style.setProperty('--spotify-in-discord__player-album-border-radius', `${this.settings.get('coverRoundness', 50)}%`);
 
     this._injectPlayer();
     this._patchAutoPause();
@@ -42,6 +42,7 @@ export default class SpotifyInDiscord extends Plugin {
     this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />);
 
     commands.registerCommands();
+    await sleep(10000);
   }
 
   stop () {
