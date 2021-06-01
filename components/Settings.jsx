@@ -14,7 +14,7 @@ export default memo(({ getSetting, updateSetting, toggleSetting, patch }) => {
         onValueChange={v => {
           v = Math.floor(v);
           updateSetting('coverRoundness', v);
-          document.documentElement.style.setProperty('--spotify-in-discord__player-album-border-radius', `${v}%`);
+          document.body.style.setProperty('--spotify-in-discord__player-album-border-radius', `${v}%`);
         }}
       >
         Change Album Cover Roundness
