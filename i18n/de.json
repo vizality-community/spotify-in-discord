@@ -1,0 +1,13 @@
+{
+  "SPOTIFY_IN_DISCORD_CONTROL_REPEAT_MODE": "Wiederholungs Modus",
+  "SPOTIFY_IN_DISCORD_CONTROL_NO_REPEAT": "Nicht wiederholen",
+  "SPOTIFY_IN_DISCORD_CONTROL_REPEAT_TRACK": "Song wiederholen",
+  "SPOTIFY_IN_DISCORD_CONTROL_REPEAT": "Wiederholen",
+  "SPOTIFY_IN_DISCORD_CONTROL_SHUFFLE": "Shuffle",
+  "SPOTIFY_IN_DISCORD_VOLUME": "Lautstärke",
+  "SPOTIFY_IN_DISCORD_OPEN": "In Spotify öffnen",
+  "SPOTIFY_IN_DISCORD_SEND_ALBUM": "Sende Album in einen Channel",
+  "SPOTIFY_IN_DISCORD_SEND_SONG": "Sende Song in einen Channel",
+  "SPOTIFY_IN_DISCORD_COPY_ALBUM_URL": "Kopiere Album URL",
+  "SPOTIFY_IN_DISCORD_COPY_SONG_URL": "Kopiere Song URL"
+}
