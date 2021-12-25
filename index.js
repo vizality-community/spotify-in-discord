@@ -1,4 +1,4 @@
-import { React, getModule, spotify, getModuleByDisplayName } from '@vizality/webpack';
+import { React, getModule, spotify, getModuleByDisplayName, getModulesByKeyword } from '@vizality/webpack';
 import { getOwnerInstance, findInTree } from '@vizality/util/react';
 import { waitForElement } from '@vizality/util/dom';
 import { patch, unpatch } from '@vizality/patcher';
@@ -121,7 +121,7 @@ export default class SpotifyInDiscord extends Plugin {
     // Handle track
     const currentTrack = playerStore.getCurrentTrack();
     if ((state.item?.id || state.item?.is_local) && (!currentTrack || currentTrack.id !== state.item?.id || currentTrack.name !== state.item?.name)) {
-      const { theme } = getModule('renderEmbeds', 'renderReactions', 'renderSpoilers');
+      const { theme } = getModulesByKeyword("renderEmbeds")[0];
       const cover =
         state.item.album && state.item.album.images[0]
           ? state.item.album.images[0].url
