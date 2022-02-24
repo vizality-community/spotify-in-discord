@@ -43,11 +43,11 @@ const Player = memo(props => {
 
   const renderShuffle = () => {
     if (!playerState.canShuffle) {
-      return renderButton(() => 'Cannot shuffle right now', 'Shuffle', '12', () => void 0, true);
+      return renderButton(() => 'Cannot shuffle right now', 'shuffle', '12', () => void 0, true);
     }
 
     const { shuffle } = playerState;
-    return renderButton(() => 'Shuffle', 'Shuffle', '12', () =>
+    return renderButton(() => 'Shuffle', 'shuffle', '12', () =>
       SpotifyAPI.setShuffleState(!shuffle), false, shuffle ? 'active' : '');
   };
 
@@ -74,16 +74,16 @@ const Player = memo(props => {
 
   const renderRepeat = () => {
     if (!playerState.canRepeat && !playerState.canRepeatOne) {
-      return renderButton(() => 'Cannot repeat right now', 'Sync', '12', () => void 0, true);
+      return renderButton(() => 'Cannot repeat right now', 'sync', '12', () => void 0, true);
     }
 
     switch (playerState.repeat) {
       case playerStore.RepeatState.NO_REPEAT:
-        return renderButton(() => 'Repeat', 'Sync', '12', () => handleSetRepeat(), false);
+        return renderButton(() => 'Repeat', 'sync', '12', () => handleSetRepeat(), false);
       case playerStore.RepeatState.REPEAT_CONTEXT:
-        return renderButton(() => 'Repeat Track', 'Sync', '12', () => handleSetRepeat(), false, 'active');
+        return renderButton(() => 'Repeat Track', 'sync', '12', () => handleSetRepeat(), false, 'active');
       case playerStore.RepeatState.REPEAT_TRACK:
-        return renderButton(() => 'No Repeat', 'Undo', '12', () => handleSetRepeat(), false, 'active');
+        return renderButton(() => 'No Repeat', 'undo', '12', () => handleSetRepeat(), false, 'active');
     }
   };
 
@@ -113,12 +113,12 @@ const Player = memo(props => {
     return (
       <Flex basis='auto' grow={1} shrink={0} className={'spotify-in-discord-player-controls'}>
         {renderShuffle()}
-        {renderButton(() => Messages.PAGINATION_PREVIOUS, 'Previous', '16', () => SpotifyAPI.prev())}
+        {renderButton(() => Messages.PAGINATION_PREVIOUS, 'previous', '16', () => SpotifyAPI.prev())}
         {playerState.playing
-          ? renderButton(() => Messages.PAUSE, 'Pause', '16', () => SpotifyAPI.pause())
-          : renderButton(() => Messages.PLAY, 'Play', '16', () => SpotifyAPI.play())
+          ? renderButton(() => Messages.PAUSE, 'pause', '16', () => SpotifyAPI.pause())
+          : renderButton(() => Messages.PLAY, 'play', '16', () => SpotifyAPI.play())
         }
-        {renderButton(() => Messages.NEXT, 'Next', '16', () => SpotifyAPI.next())}
+        {renderButton(() => Messages.NEXT, 'next', '16', () => SpotifyAPI.next())}
         {renderRepeat()}
       </Flex>
     );

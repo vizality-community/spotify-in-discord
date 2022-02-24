@@ -19,6 +19,22 @@ export default class SpotifyInDiscord extends Plugin {
   constructor () {
     super();
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
+    this.ponged = false;
+    // hacky workaround to get the websocket
+    this.originalSend = WebSocket.prototype.send;
+    this.socket = null;
+    const _this = this;
+    this.window = {};
+    this.window.sockets = [];
+    WebSocket.prototype.send = function(...args) {
+      if (_this.window.sockets.indexOf(this) === -1) {
+        _this.window.sockets.push(this);
+        if (this.url.startsWith("wss://dealer.spotify.com")) {
+          _this._webSocketPatch();
+        }
+      }
+      return _this.originalSend.call(this, ...args);
+    };
   }
 
   async start () {
@@ -29,12 +45,7 @@ export default class SpotifyInDiscord extends Plugin {
     this._injectPlayer();
     this._patchAutoPause();
 
-    vizality.on('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
-
     await SpotifyAPI.getAccessToken();
-    SpotifyAPI.getPlayer()
-      ?.then(player => this._handlePlayerState(player))
-      ?.catch(() => null);
 
     playerStoreActions.fetchDevices()
       ?.catch(() => null);
@@ -48,7 +59,8 @@ export default class SpotifyInDiscord extends Plugin {
   stop () {
     unpatch('spotify-in-discord-player');
     this._patchAutoPause(true);
-    vizality.off('webSocketMessage:dealer.spotify.com', this._handleSpotifyData);
+    WebSocket.prototype.send = this.originalSend;
+    if (this.socket) this.socket.removeEventListener('message', this._handleSpotifyData);
 
     vizality.api.commands.unregisterCommand('spotify');
 
@@ -91,8 +103,25 @@ export default class SpotifyInDiscord extends Plugin {
     }
   }
 
-  _handleSpotifyData (data) {
+  _webSocketPatch() {
+    const _this = this;
+    this.socket = this.window.sockets?.filter(socket => socket.url.startsWith("wss://dealer.spotify.com"))[0];
+    if (this.socket) {
+      this.socket.addEventListener("message", this._handleSpotifyData);
+      WebSocket.prototype.send = this.originalSend;
+    }
+  }
+
+  _handleSpotifyData(data) {
     const parsedData = JSON.parse(data.data);
+    if (parsedData.type === "pong") {
+      if (!this.ponged) {
+        this.ponged = true;
+        SpotifyAPI.getPlayer()
+              ?.then(player => this._handlePlayerState(player))
+              ?.catch(() => null);
+      }
+    }
     if (!parsedData.type === 'message' || !parsedData.payloads) return;
 
     if (parsedData.uri === 'wss://event') {
