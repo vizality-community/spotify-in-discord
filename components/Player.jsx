@@ -176,7 +176,7 @@ const Player = memo(props => {
       ? null
       : <div className='spotify-in-discord-player'>
         {renderFromBase()}
-        {/* <SeekBar
+        <SeekBar
           disabled={playerState.currentlyPlayingType === 'ad'}
           isPlaying={playerState.playing}
           duration={currentTrack.duration}
@@ -190,7 +190,7 @@ const Player = memo(props => {
               playing: false
             });
           }}
-        /> */}
+        />
       </div>
   );
 });

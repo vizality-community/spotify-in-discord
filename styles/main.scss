@@ -5,6 +5,8 @@
 
 :root {
   --spotify-in-discord__player-album-border-radius: 50%;
+  --spotify-in-discord__progress: 50%;
+  --spotify-in-discord__duration: 10s;
   --spotify-in-discord__spotify-brand-color: #1ed760;
 }
 
@@ -113,11 +115,21 @@
       transition: all .3s;
       transition-delay: .25s;
       &-progress {
+        animation-direction: normal;
+        animation-duration: var(--spotify-in-discord__duration);
+        animation-fill-mode: forwards;
+        animation-name: seekbar-progress-movement;
+        animation-timing-function: linear;
         background-color: var(--spotify-in-discord__spotify-brand-color);
         display: block;
         height: 100%;
       }
       &-cursor {
+        animation-direction: normal;
+        animation-duration: var(--spotify-in-discord__duration);
+        animation-fill-mode: forwards;
+        animation-name: seekbar-cursor-movement;
+        animation-timing-function: linear;
         background-color: var(--header-primary);
         border-radius: 50%;
         bottom: -3px;
@@ -149,5 +161,23 @@
   }
   [vz-active] {
     color: var(--spotify-in-discord__spotify-brand-color);
+  }
+}
+
+@keyframes seekbar-progress-movement {
+  from { 
+    width: var(--spotify-in-discord__progress);
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes seekbar-cursor-movement {
+  from {
+    left: var(--spotify-in-discord__progress);
+  }
+  to {
+    left: 100%;
   }
 }

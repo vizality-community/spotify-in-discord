@@ -2,18 +2,17 @@ import React, { PureComponent } from 'react';
 
 import SpotifyAPI from '../SpotifyAPI';
 
-/*
- * const formatTime = (time) => {
- *   time = Math.round(time / 1000);
- *   const hours = Math.floor(time / 3600) % 24;
- *   const minutes = Math.floor(time / 60) % 60;
- *   const seconds = time % 60;
- *   return [ hours, minutes, seconds ]
- *     .map(v => v < 10 ? `0${v}` : v)
- *     .filter((v, i) => v !== '00' || i > 0)
- *     .join(':');
- * };
- */
+
+const formatTime = (time) => {
+ time = Math.round(time / 1000);
+ const hours = Math.floor(time / 3600) % 24;
+ const minutes = Math.floor(time / 60) % 60;
+ const seconds = time % 60;
+ return [ hours, minutes, seconds ]
+ .map(v => v < 10 ? `0${v}` : v)
+ .filter((v, i) => v !== '00' || i > 0)
+ .join(':');
+};
 
 export default class SeekBar extends PureComponent {
   constructor (props) {
@@ -32,7 +31,13 @@ export default class SeekBar extends PureComponent {
   }
 
   componentDidMount () {
-    this._renderInterval = setInterval(() => this.forceUpdate(), 500);
+    this._renderInterval = setInterval(() => {
+      if (formatTime(this.state.progress) !== formatTime(this.props.progress)) {
+        this.state.progress = this.props.progress
+        this.forceUpdate()
+      }
+      else this.state.progress = this.props.progress
+    }, 500);
   }
 
   componentDidUpdate (prevProps) {
@@ -111,10 +116,18 @@ export default class SeekBar extends PureComponent {
     } else if (!isOverflowing && this._overflowFired) {
       this._overflowFired = false;
     }
+    document.body.style.setProperty('--spotify-in-discord__duration', `${(this.props.duration - progress) / 1000}s`)
+    document.body.style.setProperty('--spotify-in-discord__progress', `${current}%`);
+    document.getAnimations().forEach((anim) => {
+      if (anim.animationName?.includes("seekbar")) {
+        anim.cancel()
+        anim.play()
+      }
+  });
 
     return (
       <div className='spotify-in-discord-player-seek'>
-        {/* <div className='spotify-in-discord-player-seek-elements'>
+        <div className='spotify-in-discord-player-seek-elements'>
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(progress)}
           </span>
@@ -122,7 +135,7 @@ export default class SeekBar extends PureComponent {
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(this.props.duration)}
           </span>
-        </div> */}
+        </div>
         <div className='spotify-in-discord-player-seek-bar' onMouseDown={e => this.startSeek(e)}>
           <span className='spotify-in-discord-player-seek-bar-progress' style={{ width: `${current}%` }}/>
           <span className='spotify-in-discord-player-seek-bar-cursor' style={{ left: `${current}%` }}/>
