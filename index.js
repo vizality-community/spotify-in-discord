@@ -20,6 +20,7 @@ export default class SpotifyInDiscord extends Plugin {
     super();
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
     this.ponged = false;
+    this.position = this.settings.get('player-position', 'channel-list')
     // hacky workaround to get the websocket
     this.originalSend = WebSocket.prototype.send;
     this.socket = null;
@@ -50,7 +51,7 @@ export default class SpotifyInDiscord extends Plugin {
     playerStoreActions.fetchDevices()
       ?.catch(() => null);
 
-    this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} {...props} />);
+    this.registerSettings(props => <Settings addonId={this.addonId} patch={this._patchAutoPause.bind(this)} reinject={this._reinjectPlayer.bind(this)} {...props} />);
 
     commands.registerCommands();
     await sleep(10000);
@@ -78,14 +79,83 @@ export default class SpotifyInDiscord extends Plugin {
 
   async _injectPlayer () {
     await sleep(1e3); // It ain't stupid if it works
+    this.position = this.settings.get('player-position', 'channel-list')
     const { container } = getModule('container', 'usernameContainer');
     const accountContainer = await waitForElement(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
-    await patch('spotify-in-discord-player', instance.__proto__, 'render', (_, res) => {
-      const realRes = findInTree(res, t => t.props?.className === container);
-      return [ <Player addonId={this.addonId} base={realRes} />, res ];
+    await patch('spotify-in-discord-player-base', instance.__proto__, 'render', (_, res) => {
+        this.realRes = findInTree(res, t => t.props?.className === container);
+        return [res];
     });
     instance.forceUpdate();
+    unpatch('spotify-in-discord-player-base')
+    const baseExports = {
+      addonId: this.addonId,
+      base: this.realRes,
+      getSetting: this.settings.get,
+      updateSetting: this.settings.set,
+    }
+    if (this.position === 'channel-list') {
+      await patch('spotify-in-discord-player', instance.__proto__, 'render', (_, res) => {
+        return [<Player {...baseExports} reinject={this._reinjectPlayer.bind(this)} />, res];
+      });
+      instance.forceUpdate();
+    } else if (this.position === 'member-list-top' || this.position === 'member-list-bottom') {
+      const { ListThin } = getModule(["ListThin"], false);
+      patch('spotify-in-discord-player', ListThin, "render", (args, res) => {
+        if (
+          !args[0] ||
+          !args[0]["data-list-id"] ||
+          !args[0]["data-list-id"].startsWith("members")
+        ) {
+          return res;
+        }
+
+        res.props.children = this.position == "member-list-bottom" ? [
+          res.props.children, <Player {...baseExports} reinject={this._reinjectPlayer.bind(this)} extraClasses={["bottom"]} />,
+        ] : [
+            <Player {...baseExports} reinject={this._reinjectPlayer.bind(this)} extraClasses={["top"]}/>,
+          res.props.children,
+        ];
+
+        return res;
+      });
+    }
+  }
+
+  async _reinjectPlayer () {
+    unpatch('spotify-in-discord-player');
+    if (this.position === 'channel-list') {
+      const { container } = getModule('container', 'usernameContainer');
+      const accountContainer = await waitForElement(`section > .${container}`);
+      const instance = getOwnerInstance(accountContainer);
+      await patch('spotify-in-discord-player-remover', instance.__proto__, 'render', (_, res) => {
+        res = res.filter(
+          (item) => item?.props?.addonId !== this.addonId
+        )
+        return [res];
+      });
+      instance.forceUpdate();
+    } else if (this.position === 'member-list-top' || this.position === 'member-list-bottom') {
+      const { ListThin } = getModule(["ListThin"], false);
+      await patch('spotify-in-discord-player-remover', ListThin, "render", (args, res) => {
+        if (
+          !args[0] ||
+          !args[0]["data-list-id"] ||
+          !args[0]["data-list-id"].startsWith("members")
+        ) {
+          return res;
+        }
+
+        res.props.children = res.props.children.filter(
+          (item) => item?.props?.addonId != this.addonId
+        );
+
+        return res;
+      });
+    }
+    unpatch('spotify-in-discord-player-remover');
+    this._injectPlayer()
   }
 
   _patchAutoPause (revert) {

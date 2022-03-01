@@ -165,6 +165,35 @@
   }
 }
 
+.spotify-in-discord-player.top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-bottom: -10px;
+  border-bottom: solid;
+  border-width: 10px;
+  @if --navdrawer-color != null {
+    border-color: var(--navdrawer-color);
+  } @else {
+    border-color: var(--background-secondary)
+  }
+}
+
+.spotify-in-discord-player.bottom {
+  position: sticky;
+  bottom: -2.66%;
+  z-index: 1;
+  padding-top: 10px;
+  margin-top: -10px;
+  border-bottom: solid;
+  border-width: 15px;
+  @if --navdrawer-color != null {
+    border-color: var(--navdrawer-color);
+  } @else {
+    border-color: var(--background-secondary)
+  }
+}
+
 @keyframes seekbar-progress-movement {
   from { 
     width: var(--spotify-in-discord__progress);
