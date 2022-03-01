@@ -118,6 +118,7 @@ export default class SeekBar extends PureComponent {
     }
     document.body.style.setProperty('--spotify-in-discord__duration', `${(this.props.duration - progress) / 1000}s`)
     document.body.style.setProperty('--spotify-in-discord__progress', `${current}%`);
+    document.body.style.setProperty('--spotify-in-discord__end', `${this.props.isPlaying ? "100%": `${current}%`}`)
     document.getAnimations().forEach((anim) => {
       if (anim.animationName?.includes("seekbar")) {
         anim.cancel()

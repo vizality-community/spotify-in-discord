@@ -4,6 +4,7 @@
 @use 'embeds';
 
 :root {
+  --spotify-in-discord__end: 100%;
   --spotify-in-discord__player-album-border-radius: 50%;
   --spotify-in-discord__progress: 50%;
   --spotify-in-discord__duration: 10s;
@@ -169,7 +170,7 @@
     width: var(--spotify-in-discord__progress);
   }
   to {
-    width: 100%;
+    width: var(--spotify-in-discord__end);
   }
 }
 
@@ -178,6 +179,6 @@
     left: var(--spotify-in-discord__progress);
   }
   to {
-    left: 100%;
+    left: var(--spotify-in-discord__end);
   }
 }
