@@ -4,7 +4,10 @@
 @use 'embeds';
 
 :root {
+  --spotify-in-discord__end: 100%;
   --spotify-in-discord__player-album-border-radius: 50%;
+  --spotify-in-discord__progress: 50%;
+  --spotify-in-discord__duration: 10s;
   --spotify-in-discord__spotify-brand-color: #1ed760;
 }
 
@@ -113,11 +116,21 @@
       transition: all .3s;
       transition-delay: .25s;
       &-progress {
+        animation-direction: normal;
+        animation-duration: var(--spotify-in-discord__duration);
+        animation-fill-mode: forwards;
+        animation-name: seekbar-progress-movement;
+        animation-timing-function: linear;
         background-color: var(--spotify-in-discord__spotify-brand-color);
         display: block;
         height: 100%;
       }
       &-cursor {
+        animation-direction: normal;
+        animation-duration: var(--spotify-in-discord__duration);
+        animation-fill-mode: forwards;
+        animation-name: seekbar-cursor-movement;
+        animation-timing-function: linear;
         background-color: var(--header-primary);
         border-radius: 50%;
         bottom: -3px;
@@ -149,5 +162,52 @@
   }
   [vz-active] {
     color: var(--spotify-in-discord__spotify-brand-color);
+  }
+}
+
+.spotify-in-discord-player.top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-bottom: -10px;
+  border-bottom: solid;
+  border-width: 10px;
+  @if --navdrawer-color != null {
+    border-color: var(--navdrawer-color);
+  } @else {
+    border-color: var(--background-secondary)
+  }
+}
+
+.spotify-in-discord-player.bottom {
+  position: sticky;
+  bottom: -2.66%;
+  z-index: 1;
+  padding-top: 10px;
+  margin-top: -10px;
+  border-bottom: solid;
+  border-width: 15px;
+  @if --navdrawer-color != null {
+    border-color: var(--navdrawer-color);
+  } @else {
+    border-color: var(--background-secondary)
+  }
+}
+
+@keyframes seekbar-progress-movement {
+  from { 
+    width: var(--spotify-in-discord__progress);
+  }
+  to {
+    width: var(--spotify-in-discord__end);
+  }
+}
+
+@keyframes seekbar-cursor-movement {
+  from {
+    left: var(--spotify-in-discord__progress);
+  }
+  to {
+    left: var(--spotify-in-discord__end);
   }
 }

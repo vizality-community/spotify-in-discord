@@ -17,7 +17,7 @@ const PanelSubtext = AsyncComponent.fromDisplayName('PanelSubtext');
 const Tooltip = AsyncComponent.fromDisplayName('Tooltip');
 
 const Player = memo(props => {
-  const { devices, currentTrack, playerState, base } = props;
+  const { devices, currentTrack, playerState, base, extraClasses, getSetting, updateSetting, reinject } = props;
   const [ , setSeeking ] = useState(null);
   const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
 
@@ -35,6 +35,9 @@ const Player = memo(props => {
           <ContextMenu
             currentTrack={currentTrack}
             playerState={playerState}
+            getSetting={getSetting}
+            updateSetting={updateSetting}
+            reinject={reinject}
           />
         )
       }
@@ -133,7 +136,15 @@ const Player = memo(props => {
         ...base.props,
         onMouseEnter: () => void 0,
         onMouseLeave: () => void 0,
-        onContextMenu: e => contextMenu.openContextMenu(e, () => <ContextMenu />),
+        onContextMenu: e => contextMenu.openContextMenu(e, () =>
+          <ContextMenu
+            currentTrack={currentTrack}
+            playerState={playerState}
+            getSetting={getSetting}
+            updateSetting={updateSetting}
+            reinject={reinject} 
+          />
+        ),
         className: base.props.className,
         children: [
           (
@@ -174,9 +185,9 @@ const Player = memo(props => {
   return (
     devices?.length === 0 || !currentTrack
       ? null
-      : <div className='spotify-in-discord-player'>
+      : <div className={`spotify-in-discord-player ${extraClasses?.join(' ')}`}>
         {renderFromBase()}
-        {/* <SeekBar
+        <SeekBar
           disabled={playerState.currentlyPlayingType === 'ad'}
           isPlaying={playerState.playing}
           duration={currentTrack.duration}
@@ -190,7 +201,7 @@ const Player = memo(props => {
               playing: false
             });
           }}
-        /> */}
+        />
       </div>
   );
 });

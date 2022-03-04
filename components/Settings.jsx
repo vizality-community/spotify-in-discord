@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 
-import { SwitchItem, SliderInput } from '@vizality/components/settings';
+import { SelectInput, SwitchItem, SliderInput } from '@vizality/components/settings';
 
-export default memo(({ getSetting, updateSetting, toggleSetting, patch }) => {
+export default memo(({ getSetting, updateSetting, toggleSetting, patch, reinject }) => {
   return (
     <div>
       <SliderInput
@@ -29,6 +29,29 @@ export default memo(({ getSetting, updateSetting, toggleSetting, patch }) => {
       >
         Disable Auto Pause
       </SwitchItem>
+      <SelectInput
+        note='Changes the way the player is displayed'
+        value={getSetting('player-position', 'channel-list')}
+        options={[
+            {
+              value: 'channel-list',
+              label: 'Channel List'
+            },
+            {
+              value: 'member-list-bottom',
+              label: 'Member List Bottom'
+            },
+            {
+              value: 'member-list-top',
+              label: 'Member List Top'
+            },
+        ]}
+        onChange={res => {
+            updateSetting('player-position', res.value)
+            reinject()
+          }
+        }
+      ></SelectInput>
     </div>
   );
 });

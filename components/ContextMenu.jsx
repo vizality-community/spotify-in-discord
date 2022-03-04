@@ -15,7 +15,7 @@ const { closeContextMenu } = contextMenu;
 const _error = (...message) => error({ labels: [ 'Plugin', 'Spotify in Discord' ], message });
 
 const Menu = memo(props => {
-  const { playerState, currentTrack } = props;
+  const { playerState, currentTrack, getSetting, updateSetting, reinject } = props;
   const [ , setVol ] = useState({});
   const advertisement = Boolean(playerState?.currentlyPlayingType === 'ad');
 
@@ -140,6 +140,8 @@ const Menu = memo(props => {
   );
 
   const renderActions = () => {
+    const playerPosition = getSetting('player-position', 'channel-list')
+
     return (
       <>
         <ContextMenu.Group>
@@ -211,6 +213,50 @@ const Menu = memo(props => {
           />
         </ContextMenu.Group>
         <ContextMenu.Separator />
+        <ContextMenu.Item id='position' label='Player Position'>
+          <ContextMenu.RadioItem
+            id={`off${playerPosition == 'channel-list' ? '-active' : ''}`}
+            group='position'
+            label='Channel List'
+            checked={playerPosition == 'channel-list'}
+            action={() => {
+              try {
+                updateSetting('player-position', 'channel-list')
+                reinject()
+              } catch (err) {
+                _error(err)
+              }
+            }}
+          />
+          <ContextMenu.RadioItem
+            id={`context${playerPosition == 'member-list-bottom' ? '-active' : ''}`}
+            group='position'
+            label='Member List Bottom'
+            checked={playerPosition == 'member-list-bottom'}
+            action={() => {
+              try {
+                updateSetting('player-position', 'member-list-bottom')
+                reinject()
+              } catch (err) {
+                _error(err)
+              }
+            }}
+          />
+          <ContextMenu.RadioItem
+            id={`track${playerPosition == 'member-list-top' ? '-active' : ''}`}
+            group='position'
+            label='Member List Top'
+            checked={playerPosition == 'member-list-top'}
+            action={() => {
+              try {
+                updateSetting('player-position', 'member-list-top')
+                reinject()
+              } catch (err) {
+                _error(err)
+              }
+            }}
+          />
+        </ContextMenu.Item>
         <ContextMenu.Item
           id='reload-player'
           label={() => ReloadText()}
