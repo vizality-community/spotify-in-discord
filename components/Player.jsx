@@ -17,7 +17,7 @@ const PanelSubtext = AsyncComponent.fromDisplayName('PanelSubtext');
 const Tooltip = AsyncComponent.fromDisplayName('Tooltip');
 
 const Player = memo(props => {
-  const { devices, currentTrack, playerState, base, extraClasses, getSetting, updateSetting, reinject } = props;
+  const { devices, currentTrack, playerState, base, extraClasses, getSetting, updateSetting, reinject, minimalist, coverCursor, spinningAlbumCover } = props;
   const [ , setSeeking ] = useState(null);
   const advertisement = Boolean(playerState.currentlyPlayingType === 'ad');
 
@@ -163,7 +163,7 @@ const Player = memo(props => {
                     <img
                       {...props}
                       src={currentTrack.cover || SPOTIFY_DEFAULT_IMAGE}
-                      className={joinClassNames('spotify-in-discord-player-album-cover', avatar)}
+                      className={joinClassNames('spotify-in-discord-player-album-cover', avatar, spinningAlbumCover ? 'spinning-album-cover' : '')}
                       width='32'
                       height='32'
                     />
@@ -185,8 +185,8 @@ const Player = memo(props => {
   return (
     devices?.length === 0 || !currentTrack
       ? null
-      : <div className={`spotify-in-discord-player ${extraClasses?.join(' ')}`}>
-        {renderFromBase()}
+      : <div className={`${minimalist ? 'minimalist' : ''} spotify-in-discord-player ${extraClasses?.join(' ')}`}>
+        {minimalist ? null : renderFromBase()}
         <SeekBar
           disabled={playerState.currentlyPlayingType === 'ad'}
           isPlaying={playerState.playing}
@@ -201,6 +201,9 @@ const Player = memo(props => {
               playing: false
             });
           }}
+          minimalist={minimalist}
+          coverCursor={coverCursor}
+          coverSrc={currentTrack.cover || SPOTIFY_DEFAULT_IMAGE}
         />
       </div>
   );

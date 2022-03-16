@@ -6,6 +6,7 @@
 :root {
   --spotify-in-discord__end: 100%;
   --spotify-in-discord__player-album-border-radius: 50%;
+  --spotify-in-discord__player-album-spin-speed: 20;
   --spotify-in-discord__progress: 50%;
   --spotify-in-discord__duration: 10s;
   --spotify-in-discord__spotify-brand-color: #1ed760;
@@ -172,11 +173,7 @@
   margin-bottom: -10px;
   border-bottom: solid;
   border-width: 10px;
-  @if --navdrawer-color != null {
-    border-color: var(--navdrawer-color);
-  } @else {
-    border-color: var(--background-secondary)
-  }
+  border-color: var(--background-secondary)
 }
 
 .spotify-in-discord-player.bottom {
@@ -186,12 +183,8 @@
   padding-top: 10px;
   margin-top: -10px;
   border-bottom: solid;
-  border-width: 15px;
-  @if --navdrawer-color != null {
-    border-color: var(--navdrawer-color);
-  } @else {
-    border-color: var(--background-secondary)
-  }
+  border-width: 22px;
+  border-color: var(--background-secondary)
 }
 
 @keyframes seekbar-progress-movement {
@@ -209,5 +202,28 @@
   }
   to {
     left: var(--spotify-in-discord__end);
+  }
+}
+
+.minimalist {
+  height: 100%;
+}
+
+.spotify-in-discord-player.minimalist {
+  width: 100%;
+  height: 10px !important;
+}
+
+.spinning-album-cover {
+  animation: spin linear infinite;
+  animation-duration: calc(60s / var(--spotify-in-discord__player-album-spin-speed));
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

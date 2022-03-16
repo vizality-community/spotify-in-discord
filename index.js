@@ -21,6 +21,7 @@ export default class SpotifyInDiscord extends Plugin {
     this._handleSpotifyData = this._handleSpotifyData.bind(this);
     this.ponged = false;
     this.position = this.settings.get('player-position', 'channel-list')
+    this.minimalist = this.settings.get('minimalist', false);
     // hacky workaround to get the websocket
     this.originalSend = WebSocket.prototype.send;
     this.socket = null;
@@ -80,6 +81,9 @@ export default class SpotifyInDiscord extends Plugin {
   async _injectPlayer () {
     await sleep(1e3); // It ain't stupid if it works
     this.position = this.settings.get('player-position', 'channel-list')
+    this.minimalist = this.settings.get('minimalist', false);
+    this.coverCursor = this.settings.get('cover-cursor', false);
+    this.spinningAlbumCover = this.settings.get('spinning-album-cover', false);
     const { container } = getModule('container', 'usernameContainer');
     const accountContainer = await waitForElement(`section > .${container}`);
     const instance = getOwnerInstance(accountContainer);
@@ -94,6 +98,9 @@ export default class SpotifyInDiscord extends Plugin {
       base: this.realRes,
       getSetting: this.settings.get,
       updateSetting: this.settings.set,
+      minimalist: this.minimalist,
+      coverCursor: this.coverCursor,
+      spinningAlbumCover: this.spinningAlbumCover,
     }
     if (this.position === 'channel-list') {
       await patch('spotify-in-discord-player', instance.__proto__, 'render', (_, res) => {

@@ -52,6 +52,50 @@ export default memo(({ getSetting, updateSetting, toggleSetting, patch, reinject
           }
         }
       ></SelectInput>
+      <SwitchItem
+        note={`Minimalizes the size of the player until hovered over`}
+        value={getSetting('minimalist', false)}
+        onChange={() => {
+          toggleSetting('minimalist');
+          reinject();
+        }}
+      >
+        Minimalist Mode
+      </SwitchItem>
+      <SwitchItem
+        note={`Makes the cursor of the seek-bar the album cover`}
+        value={getSetting('cover-cursor', false)}
+        onChange={() => {
+          toggleSetting('cover-cursor');
+          reinject();
+        }}
+      >
+        Cover Cursor
+      </SwitchItem>
+      <SwitchItem
+        note={`Makes the album cover image spin at a certain speed`}
+        value={getSetting('spinning-album-cover', false)}
+        onChange={() => {
+          toggleSetting('spinning-album-cover');
+          reinject();
+        }}
+      >
+        Spinning Album Cover
+      </SwitchItem>
+      <SliderInput
+        note='Changes the speed the cover image spins at.'
+        initialValue={20}
+        maxValue={120}
+        minValue={1}
+        defaultValue={getSetting('spinSpeed', 20)}
+        onValueChange={v => {
+          v = Math.floor(v);
+          updateSetting('spinSpeed', v);
+          document.body.style.setProperty('--spotify-in-discord__player-album-spin-speed', `${v}`);
+        }}
+      >
+        Change Album Cover Spin Speed (in RPM)
+      </SliderInput>
     </div>
   );
 });
