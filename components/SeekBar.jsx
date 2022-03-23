@@ -127,20 +127,20 @@ export default class SeekBar extends PureComponent {
   });
 
     return (
-      <div className='spotify-in-discord-player-seek'>
-        <div className='spotify-in-discord-player-seek-elements'>
+      <div className={`${this.props.minimalist ? "minimalist" : ""} spotify-in-discord-player-seek`}>
+        <div className={`${this.props.minimalist ? "minimalist" : ""} spotify-in-discord-player-seek-elements`}>
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(progress)}
           </span>
-          {this.props.children}
           <span className='spotify-in-discord-player-seek-duration'>
             {formatTime(this.props.duration)}
           </span>
         </div>
-        <div className='spotify-in-discord-player-seek-bar' onMouseDown={e => this.startSeek(e)}>
+        <div className={`${this.props.minimalist ? "minimalist" : ""} spotify-in-discord-player-seek-bar`} onMouseDown={e => this.startSeek(e)}>
           <span className='spotify-in-discord-player-seek-bar-progress' style={{ width: `${current}%` }}/>
-          <span className='spotify-in-discord-player-seek-bar-cursor' style={{ left: `${current}%` }}/>
+          {this.props.coverCursor ? <img className='spotify-in-discord-player-seek-bar-cursor' src={this.props.coverSrc} style={{ left: `${current}%` }} /> : <soan className='spotify-in-discord-player-seek-bar-cursor' style={{ left: `${current}%` }} /> }
         </div>
+          {this.props.children}
       </div>
     );
   }
