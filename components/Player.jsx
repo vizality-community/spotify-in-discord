@@ -23,9 +23,9 @@ const Player = memo(props => {
 
   const renderButton = (tooltipText, icon, size, onClick, disabled, active) => {
     return {
-      ...base.props.children[2].props.children[0],
+      ...base.props.children[1].props.children[0],
       props: {
-        ...base.props.children[2].props.children[0].props,
+        ...base.props.children[1].props.children[0].props,
         'aria-label': icon,
         icon: () => <Icon name={icon} size={size} vz-active={Boolean(active) && ''} />,
         tooltipText: tooltipText(),
@@ -91,15 +91,15 @@ const Player = memo(props => {
   };
 
   const renderNameComponent = (props = {}) => {
-    const nameComponent = base.props.children[1].props.children({});
+    const nameComponent = base.props.children[0].props.children[1].props.children({});
     delete nameComponent.props.onMouseLeave;
     delete nameComponent.props.onMouseEnter;
     delete nameComponent.props.onClick;
     [ nameComponent.props.className ] = nameComponent.props.className.split(' ');
     Object.assign(nameComponent.props, props);
-    nameComponent.props.children[0].props.className = 'spotify-title';
-    nameComponent.props.children[0].props.children.props.children = currentTrack.name;
-    nameComponent.props.children[1] =
+    nameComponent.props.children.props.children[0].props.className = 'spotify-title';
+    nameComponent.props.children.props.children[0].props.children.props.children = currentTrack.name;
+    nameComponent.props.children.props.children[1] =
       advertisement
         ? null
         : <PanelSubtext className='spotify-artist'>
