@@ -91,15 +91,19 @@ const Player = memo(props => {
   };
 
   const renderNameComponent = (props = {}) => {
-    const nameComponent = base.props.children[0].props.children[1].props.children({});
-    delete nameComponent.props.onMouseLeave;
-    delete nameComponent.props.onMouseEnter;
-    delete nameComponent.props.onClick;
+    const nameComponent = base.props.children[0].props.children[0].props.children({}).props.children.props.children({});
+    const ourNameComponent = { ...nameComponent };
+    delete ourNameComponent.props.onMouseLeave;
+    delete ourNameComponent.props.onMouseEnter;
+    delete ourNameComponent.props.onClick;
     [ nameComponent.props.className ] = nameComponent.props.className.split(' ');
-    Object.assign(nameComponent.props, props);
-    nameComponent.props.children.props.children[0].props.className = 'spotify-title';
-    nameComponent.props.children.props.children[0].props.children.props.children = currentTrack.name;
-    nameComponent.props.children.props.children[1] =
+    ourNameComponent.props.children[0] =
+      <div class="defaultColor-24IHKz text-sm-normal-3Zj3Iv usernameContainer-3PPkWq" data-text-variant="text-sm/normal">
+        <div class="text-sm-normal-3Zj3Iv title-338goq" data-text-variant="text-sm/normal">
+          {currentTrack.name}
+        </div>
+      </div>;
+    ourNameComponent.props.children[1] =
       advertisement
         ? null
         : <PanelSubtext className='spotify-artist'>
@@ -109,7 +113,7 @@ const Player = memo(props => {
           })}
         </PanelSubtext>;
 
-    return nameComponent;
+    return ourNameComponent;
   };
 
   const renderAllButtons = () => {
